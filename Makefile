@@ -7,7 +7,7 @@ generate: fmt
 
 .PHONY: test
 test:
-	go test -v -count 1 ./...
+	go test -race -v -count 1 ./...
 
 .PHONY: lint
 lint: fmt ## Run linters on all go files

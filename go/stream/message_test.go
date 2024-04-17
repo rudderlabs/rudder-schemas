@@ -22,34 +22,21 @@ func TestMessage(t *testing.T) {
 			"traceID":         "traceID",
 		}
 
-		inPayload := []byte(`{
-			"key": "value",
-			"key2": "value2",
-			"key3": {
-				"key4": "value4"
-			}
-		}`)
+		msg := stream.FromMapProperties(input)
 
-		msg, err := stream.FromPulsarMessage(input, inPayload)
-		require.NoError(t, err)
-
-		require.Equal(t, stream.Message{
-			Properties: stream.MessageProperties{
-				MessageID:       "messageID",
-				RoutingKey:      "routingKey",
-				WorkspaceID:     "workspaceID",
-				UserID:          "userID",
-				SourceID:        "sourceID",
-				SourceJobRunID:  "sourceJobRunID",
-				SourceTaskRunID: "sourceTaskRunID",
-				TraceID:         "traceID",
-			},
-			Payload: inPayload,
+		require.Equal(t, stream.MessageProperties{
+			MessageID:       "messageID",
+			RoutingKey:      "routingKey",
+			WorkspaceID:     "workspaceID",
+			UserID:          "userID",
+			SourceID:        "sourceID",
+			SourceJobRunID:  "sourceJobRunID",
+			SourceTaskRunID: "sourceTaskRunID",
+			TraceID:         "traceID",
 		}, msg)
 
-		propertiesOut, payloadOut := stream.ToPulsarMessage(msg)
+		propertiesOut := stream.ToMapProperties(msg)
 		require.Equal(t, input, propertiesOut)
-		require.Equal(t, inPayload, payloadOut)
 	})
 
 	t.Run("message to/from: JSON", func(t *testing.T) {

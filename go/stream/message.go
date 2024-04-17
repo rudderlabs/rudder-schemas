@@ -18,8 +18,8 @@ const (
 )
 
 type Message struct {
-	Properties MessageProperties `json:"properties"`
-	Payload    json.RawMessage   `json:"payload"`
+	Properties MessageProperties `json:"properties" validate:"required"`
+	Payload    json.RawMessage   `json:"payload" validate:"required"`
 }
 
 type MessageProperties struct {
@@ -28,31 +28,27 @@ type MessageProperties struct {
 	WorkspaceID     string `json:"workspaceID" validate:"required"`
 	UserID          string `json:"userID" validate:"required"`
 	SourceID        string `json:"sourceID" validate:"required"`
-	SourceJobRunID  string `json:"sourceJobRunID"`  // optional
-	SourceTaskRunID string `json:"sourceTaskRunID"` // optional
-	TraceID         string `json:"traceID"`         // optional
+	SourceJobRunID  string `json:"sourceJobRunID,omitempty"`  // optional
+	SourceTaskRunID string `json:"sourceTaskRunID,omitempty"` // optional
+	TraceID         string `json:"traceID,omitempty"`         // optional
 }
 
-// FromPulsarMessage converts a Pulsar message to a Message.
-func FromPulsarMessage(properties map[string]string, payload []byte) (Message, error) {
-	return Message{
-		Properties: MessageProperties{
-			MessageID:       properties[pulsarKeyMessageID],
-			RoutingKey:      properties[pulsarKeyRoutingKey],
-			WorkspaceID:     properties[pulsarKeyWorkspaceID],
-			UserID:          properties[pulsarKeyUserID],
-			SourceID:        properties[pulsarKeySourceID],
-			SourceJobRunID:  properties[pulsarKeySourceJobRunID],
-			SourceTaskRunID: properties[pulsarKeySourceTaskRunID],
-			TraceID:         properties[pulsarKeyTraceID],
-		},
-		Payload: json.RawMessage(payload),
-	}, nil
+// FromMapProperties converts a property map to MessageProperties.
+func FromMapProperties(properties map[string]string) MessageProperties {
+	return MessageProperties{
+		MessageID:       properties[pulsarKeyMessageID],
+		RoutingKey:      properties[pulsarKeyRoutingKey],
+		WorkspaceID:     properties[pulsarKeyWorkspaceID],
+		UserID:          properties[pulsarKeyUserID],
+		SourceID:        properties[pulsarKeySourceID],
+		SourceJobRunID:  properties[pulsarKeySourceJobRunID],
+		SourceTaskRunID: properties[pulsarKeySourceTaskRunID],
+		TraceID:         properties[pulsarKeyTraceID],
+	}
 }
 
-// ToPulsarMessage converts a Message to a Pulsar message.
-func ToPulsarMessage(msg Message) (map[string]string, []byte) {
-	properties := msg.Properties
+// ToMapProperties converts a Message to map properties.
+func ToMapProperties(properties MessageProperties) map[string]string {
 	return map[string]string{
 		pulsarKeyMessageID:       properties.MessageID,
 		pulsarKeyRoutingKey:      properties.RoutingKey,
@@ -62,7 +58,7 @@ func ToPulsarMessage(msg Message) (map[string]string, []byte) {
 		pulsarKeySourceJobRunID:  properties.SourceJobRunID,
 		pulsarKeySourceTaskRunID: properties.SourceTaskRunID,
 		pulsarKeyTraceID:         properties.TraceID,
-	}, []byte(msg.Payload)
+	}
 }
 
 func NewMessageValidator() func(msg *Message) error {
