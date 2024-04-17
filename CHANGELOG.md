@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.1.0...v0.2.0) (2024-04-17)
+
+
+### Features
+
+* add received at in properties ([#5](https://github.com/rudderlabs/rudder-schemas/issues/5)) ([2479913](https://github.com/rudderlabs/rudder-schemas/commit/2479913eee5ea4350cf9f70b83eda47614535a32))
+
 ## 0.1.0 (2024-04-17)
 
 
