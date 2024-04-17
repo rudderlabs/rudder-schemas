@@ -3,6 +3,7 @@ package stream_test
 import (
 	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -17,12 +18,14 @@ func TestMessage(t *testing.T) {
 			"workspaceID":     "workspaceID",
 			"userID":          "userID",
 			"sourceID":        "sourceID",
+			"receivedAt":      time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
 			"sourceJobRunID":  "sourceJobRunID",
 			"sourceTaskRunID": "sourceTaskRunID",
 			"traceID":         "traceID",
 		}
 
-		msg := stream.FromMapProperties(input)
+		msg, err := stream.FromMapProperties(input)
+		require.NoError(t, err)
 
 		require.Equal(t, stream.MessageProperties{
 			MessageID:       "messageID",
@@ -30,6 +33,7 @@ func TestMessage(t *testing.T) {
 			WorkspaceID:     "workspaceID",
 			UserID:          "userID",
 			SourceID:        "sourceID",
+			ReceivedAt:      time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
 			SourceJobRunID:  "sourceJobRunID",
 			SourceTaskRunID: "sourceTaskRunID",
 			TraceID:         "traceID",
@@ -37,6 +41,14 @@ func TestMessage(t *testing.T) {
 
 		propertiesOut := stream.ToMapProperties(msg)
 		require.Equal(t, input, propertiesOut)
+
+		t.Run("invalid receivedAt format", func(t *testing.T) {
+			msg, err := stream.FromMapProperties(map[string]string{
+				"receivedAt": time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.Kitchen),
+			})
+			require.Empty(t, msg)
+			require.EqualError(t, err, `parsing receivedAt: parsing time "2:30AM" as "2006-01-02T15:04:05.999999999Z07:00": cannot parse "2:30AM" as "2006"`)
+		})
 	})
 
 	t.Run("message to/from: JSON", func(t *testing.T) {
@@ -48,6 +60,7 @@ func TestMessage(t *testing.T) {
 				"workspaceID": "workspaceID",
 				"userID": "userID",
 				"sourceID": "sourceID",
+				"receivedAt": "2024-08-01T02:30:50.0000002Z",
 				"sourceJobRunID": "sourceJobRunID",
 				"sourceTaskRunID": "sourceTaskRunID",
 				"traceID": "traceID"
@@ -71,6 +84,7 @@ func TestMessage(t *testing.T) {
 				WorkspaceID:     "workspaceID",
 				UserID:          "userID",
 				SourceID:        "sourceID",
+				ReceivedAt:      time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
 				SourceJobRunID:  "sourceJobRunID",
 				SourceTaskRunID: "sourceTaskRunID",
 				TraceID:         "traceID",
@@ -99,6 +113,7 @@ func TestMessage(t *testing.T) {
 				WorkspaceID: "workspaceID",
 				UserID:      "userID",
 				SourceID:    "sourceID",
+				ReceivedAt:  time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
 				// missing optional:
 				// SourceJobRunID:  "sourceJobRunID",
 				// SourceTaskRunID: "sourceTaskRunID",
@@ -115,13 +130,12 @@ func TestMessage(t *testing.T) {
 
 		msg := stream.Message{
 			Properties: stream.MessageProperties{
-				// missing message ID:
-
-				// MessageID:   "messageID",
+				MessageID:   "",
 				RoutingKey:  "routingKey",
 				WorkspaceID: "workspaceID",
 				UserID:      "userID",
 				SourceID:    "sourceID",
+				ReceivedAt:  time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
 			},
 			Payload: json.RawMessage(`{}`),
 		}
