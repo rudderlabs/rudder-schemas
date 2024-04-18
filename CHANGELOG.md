@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.2.0...v0.3.0) (2024-04-18)
+
+
+### Features
+
+* introduce request ip, optional user id ([#7](https://github.com/rudderlabs/rudder-schemas/issues/7)) ([5cba8c2](https://github.com/rudderlabs/rudder-schemas/commit/5cba8c25928b6345ea5441607ecb5d641c501c86))
+
 ## [0.2.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.1.0...v0.2.0) (2024-04-17)
 
 
