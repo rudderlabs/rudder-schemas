@@ -9,15 +9,16 @@ import (
 )
 
 const (
-	pulsarKeyMessageID       = "messageID"
-	pulsarKeyRoutingKey      = "routingKey"
-	pulsarKeyWorkspaceID     = "workspaceID"
-	pulsarKeySourceID        = "sourceID"
-	pulsarKeyUserID          = "userID"
-	pulsarKeyReceivedAt      = "receivedAt"
-	pulsarKeySourceJobRunID  = "sourceJobRunID"
-	pulsarKeySourceTaskRunID = "sourceTaskRunID"
-	pulsarKeyTraceID         = "traceID"
+	mapKeyMessageID       = "messageID"
+	mapKeyRoutingKey      = "routingKey"
+	mapKeyWorkspaceID     = "workspaceID"
+	mapKeySourceID        = "sourceID"
+	mapKeyRequestIP       = "requestIP"
+	mapKeyReceivedAt      = "receivedAt"
+	mapKeyUserID          = "userID"
+	mapKeySourceJobRunID  = "sourceJobRunID"
+	mapKeySourceTaskRunID = "sourceTaskRunID"
+	mapKeyTraceID         = "traceID"
 )
 
 type Message struct {
@@ -29,9 +30,10 @@ type MessageProperties struct {
 	MessageID       string    `json:"messageID" validate:"required"`
 	RoutingKey      string    `json:"routingKey" validate:"required"`
 	WorkspaceID     string    `json:"workspaceID" validate:"required"`
-	UserID          string    `json:"userID" validate:"required"`
 	SourceID        string    `json:"sourceID" validate:"required"`
 	ReceivedAt      time.Time `json:"receivedAt" validate:"required"`
+	RequestIP       string    `json:"requestIP" validate:"required"`
+	UserID          string    `json:"userID,omitempty"`          // optional
 	SourceJobRunID  string    `json:"sourceJobRunID,omitempty"`  // optional
 	SourceTaskRunID string    `json:"sourceTaskRunID,omitempty"` // optional
 	TraceID         string    `json:"traceID,omitempty"`         // optional
@@ -39,36 +41,38 @@ type MessageProperties struct {
 
 // FromMapProperties converts a property map to MessageProperties.
 func FromMapProperties(properties map[string]string) (MessageProperties, error) {
-	receivedAt, err := time.Parse(time.RFC3339Nano, properties[pulsarKeyReceivedAt])
+	receivedAt, err := time.Parse(time.RFC3339Nano, properties[mapKeyReceivedAt])
 	if err != nil {
 		return MessageProperties{}, fmt.Errorf("parsing receivedAt: %w", err)
 	}
 
 	return MessageProperties{
-		MessageID:       properties[pulsarKeyMessageID],
-		RoutingKey:      properties[pulsarKeyRoutingKey],
-		WorkspaceID:     properties[pulsarKeyWorkspaceID],
-		UserID:          properties[pulsarKeyUserID],
-		SourceID:        properties[pulsarKeySourceID],
+		MessageID:       properties[mapKeyMessageID],
+		RoutingKey:      properties[mapKeyRoutingKey],
+		WorkspaceID:     properties[mapKeyWorkspaceID],
+		RequestIP:       properties[mapKeyRequestIP],
+		UserID:          properties[mapKeyUserID],
+		SourceID:        properties[mapKeySourceID],
 		ReceivedAt:      receivedAt,
-		SourceJobRunID:  properties[pulsarKeySourceJobRunID],
-		SourceTaskRunID: properties[pulsarKeySourceTaskRunID],
-		TraceID:         properties[pulsarKeyTraceID],
+		SourceJobRunID:  properties[mapKeySourceJobRunID],
+		SourceTaskRunID: properties[mapKeySourceTaskRunID],
+		TraceID:         properties[mapKeyTraceID],
 	}, nil
 }
 
 // ToMapProperties converts a Message to map properties.
 func ToMapProperties(properties MessageProperties) map[string]string {
 	return map[string]string{
-		pulsarKeyMessageID:       properties.MessageID,
-		pulsarKeyRoutingKey:      properties.RoutingKey,
-		pulsarKeyWorkspaceID:     properties.WorkspaceID,
-		pulsarKeyUserID:          properties.UserID,
-		pulsarKeySourceID:        properties.SourceID,
-		pulsarKeyReceivedAt:      properties.ReceivedAt.Format(time.RFC3339Nano),
-		pulsarKeySourceJobRunID:  properties.SourceJobRunID,
-		pulsarKeySourceTaskRunID: properties.SourceTaskRunID,
-		pulsarKeyTraceID:         properties.TraceID,
+		mapKeyMessageID:       properties.MessageID,
+		mapKeyRoutingKey:      properties.RoutingKey,
+		mapKeyWorkspaceID:     properties.WorkspaceID,
+		mapKeyUserID:          properties.UserID,
+		mapKeySourceID:        properties.SourceID,
+		mapKeyRequestIP:       properties.RequestIP,
+		mapKeyReceivedAt:      properties.ReceivedAt.Format(time.RFC3339Nano),
+		mapKeySourceJobRunID:  properties.SourceJobRunID,
+		mapKeySourceTaskRunID: properties.SourceTaskRunID,
+		mapKeyTraceID:         properties.TraceID,
 	}
 }
 
