@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.3.0...v0.4.0) (2024-04-22)
+
+
+### Features
+
+* adding destination id ([#9](https://github.com/rudderlabs/rudder-schemas/issues/9)) ([ee57769](https://github.com/rudderlabs/rudder-schemas/commit/ee5776901487b123808416f9fc0c06eef5615a53))
+
 ## [0.3.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.2.0...v0.3.0) (2024-04-18)
 
 
