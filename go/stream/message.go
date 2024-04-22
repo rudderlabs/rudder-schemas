@@ -13,6 +13,7 @@ const (
 	mapKeyRoutingKey      = "routingKey"
 	mapKeyWorkspaceID     = "workspaceID"
 	mapKeySourceID        = "sourceID"
+	mapKeyDestinationID   = "destinationID"
 	mapKeyRequestIP       = "requestIP"
 	mapKeyReceivedAt      = "receivedAt"
 	mapKeyUserID          = "userID"
@@ -33,6 +34,7 @@ type MessageProperties struct {
 	SourceID        string    `json:"sourceID" validate:"required"`
 	ReceivedAt      time.Time `json:"receivedAt" validate:"required"`
 	RequestIP       string    `json:"requestIP" validate:"required"`
+	DestinationID   string    `json:"destinationID"`             // optional
 	UserID          string    `json:"userID,omitempty"`          // optional
 	SourceJobRunID  string    `json:"sourceJobRunID,omitempty"`  // optional
 	SourceTaskRunID string    `json:"sourceTaskRunID,omitempty"` // optional
@@ -53,6 +55,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		RequestIP:       properties[mapKeyRequestIP],
 		UserID:          properties[mapKeyUserID],
 		SourceID:        properties[mapKeySourceID],
+		DestinationID:   properties[mapKeyDestinationID],
 		ReceivedAt:      receivedAt,
 		SourceJobRunID:  properties[mapKeySourceJobRunID],
 		SourceTaskRunID: properties[mapKeySourceTaskRunID],
@@ -68,6 +71,7 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		mapKeyWorkspaceID:     properties.WorkspaceID,
 		mapKeyUserID:          properties.UserID,
 		mapKeySourceID:        properties.SourceID,
+		mapKeyDestinationID:   properties.DestinationID,
 		mapKeyRequestIP:       properties.RequestIP,
 		mapKeyReceivedAt:      properties.ReceivedAt.Format(time.RFC3339Nano),
 		mapKeySourceJobRunID:  properties.SourceJobRunID,
