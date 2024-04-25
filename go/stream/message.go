@@ -34,7 +34,7 @@ type MessageProperties struct {
 	SourceID        string    `json:"sourceID" validate:"required"`
 	ReceivedAt      time.Time `json:"receivedAt" validate:"required"`
 	RequestIP       string    `json:"requestIP" validate:"required"`
-	DestinationID   string    `json:"destinationID"`             // optional
+	DestinationID   string    `json:"destinationID,omitempty"`   // optional
 	UserID          string    `json:"userID,omitempty"`          // optional
 	SourceJobRunID  string    `json:"sourceJobRunID,omitempty"`  // optional
 	SourceTaskRunID string    `json:"sourceTaskRunID,omitempty"` // optional
