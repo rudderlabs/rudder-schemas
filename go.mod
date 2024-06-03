@@ -4,7 +4,7 @@ go 1.22
 
 toolchain go1.22.2
 
-require github.com/go-playground/validator/v10 v10.20.0
+require github.com/go-playground/validator/v10 v10.21.0
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
