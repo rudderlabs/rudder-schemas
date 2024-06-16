@@ -24,6 +24,9 @@ func TestMessage(t *testing.T) {
 			"sourceJobRunID":  "sourceJobRunID",
 			"sourceTaskRunID": "sourceTaskRunID",
 			"traceID":         "traceID",
+			"sourceType":      "sourceType",
+			"reason":          "reason",
+			"stage":           "stage",
 		}
 
 		msg, err := stream.FromMapProperties(input)
@@ -41,6 +44,9 @@ func TestMessage(t *testing.T) {
 			SourceJobRunID:  "sourceJobRunID",
 			SourceTaskRunID: "sourceTaskRunID",
 			TraceID:         "traceID",
+			SourceType:      "sourceType",
+			Reason:          "reason",
+			Stage:           "stage",
 		}, msg)
 
 		propertiesOut := stream.ToMapProperties(msg)
