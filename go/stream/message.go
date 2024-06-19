@@ -20,9 +20,6 @@ const (
 	mapKeySourceJobRunID  = "sourceJobRunID"
 	mapKeySourceTaskRunID = "sourceTaskRunID"
 	mapKeyTraceID         = "traceID"
-	mapKeySourceType      = "sourceType"
-	mapKeyReason          = "reason"
-	mapKeyStage           = "stage"
 )
 
 type Message struct {
@@ -42,9 +39,6 @@ type MessageProperties struct {
 	SourceJobRunID  string    `json:"sourceJobRunID,omitempty"`  // optional
 	SourceTaskRunID string    `json:"sourceTaskRunID,omitempty"` // optional
 	TraceID         string    `json:"traceID,omitempty"`         // optional
-	SourceType      string    `json:"sourceType,omitempty"`      // optional
-	Reason          string    `json:"reason,omitempty"`          // optional
-	Stage           string    `json:"stage,omitempty"`           // optional
 }
 
 // FromMapProperties converts a property map to MessageProperties.
@@ -66,9 +60,6 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		SourceJobRunID:  properties[mapKeySourceJobRunID],
 		SourceTaskRunID: properties[mapKeySourceTaskRunID],
 		TraceID:         properties[mapKeyTraceID],
-		SourceType:      properties[mapKeySourceType],
-		Reason:          properties[mapKeyReason],
-		Stage:           properties[mapKeyStage],
 	}, nil
 }
 
@@ -86,9 +77,6 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		mapKeySourceJobRunID:  properties.SourceJobRunID,
 		mapKeySourceTaskRunID: properties.SourceTaskRunID,
 		mapKeyTraceID:         properties.TraceID,
-		mapKeySourceType:      properties.SourceType,
-		mapKeyReason:          properties.Reason,
-		mapKeyStage:           properties.Stage,
 	}
 }
 
