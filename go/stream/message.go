@@ -42,16 +42,14 @@ type MessageProperties struct {
 	SourceID        string    `json:"sourceID" validate:"required"`
 	ReceivedAt      time.Time `json:"receivedAt" validate:"required"`
 	RequestIP       string    `json:"requestIP" validate:"required"`
-	DestinationID   string    `json:"destinationID,omitempty"`
-	UserID          string    `json:"userID,omitempty"`
-	SourceJobRunID  string    `json:"sourceJobRunID,omitempty"`
-	SourceTaskRunID string    `json:"sourceTaskRunID,omitempty"`
-	TraceID         string    `json:"traceID,omitempty"`
-	SourceType      string    `json:"sourceType,omitempty"`
-	Reason          string    `json:"reason,omitempty"`
-	Stage           string    `json:"stage,omitempty"`
+	DestinationID   string    `json:"destinationID,omitempty"`   // optional
+	UserID          string    `json:"userID,omitempty"`          // optional
+	SourceJobRunID  string    `json:"sourceJobRunID,omitempty"`  // optional
+	SourceTaskRunID string    `json:"sourceTaskRunID,omitempty"` // optional
+	TraceID         string    `json:"traceID,omitempty"`         // optional
 }
 
+// FromMap populates MessageProperties from a map.
 func (m *MessageProperties) FromMap(properties map[string]string) error {
 	receivedAt, err := time.Parse(time.RFC3339Nano, properties[mapKeyReceivedAt])
 	if err != nil {
@@ -61,37 +59,32 @@ func (m *MessageProperties) FromMap(properties map[string]string) error {
 	m.MessageID = properties[mapKeyMessageID]
 	m.RoutingKey = properties[mapKeyRoutingKey]
 	m.WorkspaceID = properties[mapKeyWorkspaceID]
-	m.SourceID = properties[mapKeySourceID]
-	m.ReceivedAt = receivedAt
 	m.RequestIP = properties[mapKeyRequestIP]
-	m.DestinationID = properties[mapKeyDestinationID]
 	m.UserID = properties[mapKeyUserID]
+	m.SourceID = properties[mapKeySourceID]
+	m.DestinationID = properties[mapKeyDestinationID]
+	m.ReceivedAt = receivedAt
 	m.SourceJobRunID = properties[mapKeySourceJobRunID]
 	m.SourceTaskRunID = properties[mapKeySourceTaskRunID]
 	m.TraceID = properties[mapKeyTraceID]
-	m.SourceType = properties[mapKeySourceType]
-	m.Reason = properties[mapKeyReason]
-	m.Stage = properties[mapKeyStage]
 
 	return nil
 }
 
+// ToMap converts MessageProperties to a map.
 func (m MessageProperties) ToMap() map[string]string {
 	return map[string]string{
 		mapKeyMessageID:       m.MessageID,
 		mapKeyRoutingKey:      m.RoutingKey,
 		mapKeyWorkspaceID:     m.WorkspaceID,
+		mapKeyUserID:          m.UserID,
 		mapKeySourceID:        m.SourceID,
 		mapKeyDestinationID:   m.DestinationID,
 		mapKeyRequestIP:       m.RequestIP,
 		mapKeyReceivedAt:      m.ReceivedAt.Format(time.RFC3339Nano),
-		mapKeyUserID:          m.UserID,
 		mapKeySourceJobRunID:  m.SourceJobRunID,
 		mapKeySourceTaskRunID: m.SourceTaskRunID,
 		mapKeyTraceID:         m.TraceID,
-		mapKeySourceType:      m.SourceType,
-		mapKeyReason:          m.Reason,
-		mapKeyStage:           m.Stage,
 	}
 }
 
@@ -103,6 +96,7 @@ type WebhookProperties struct {
 	Stage       string `json:"stage,omitempty" validate:"required"`
 }
 
+// FromMap populates WebhookProperties from a map.
 func (w *WebhookProperties) FromMap(properties map[string]string) error {
 	w.WorkspaceID = properties[mapKeyWorkspaceID]
 	w.SourceID = properties[mapKeySourceID]
@@ -113,6 +107,7 @@ func (w *WebhookProperties) FromMap(properties map[string]string) error {
 	return nil
 }
 
+// ToMap converts WebhookProperties to a map.
 func (w WebhookProperties) ToMap() map[string]string {
 	return map[string]string{
 		mapKeyWorkspaceID: w.WorkspaceID,
@@ -123,14 +118,17 @@ func (w WebhookProperties) ToMap() map[string]string {
 	}
 }
 
+// FromMapProperties populates a Properties object from a map.
 func FromMapProperties(properties map[string]string, prop Properties) error {
 	return prop.FromMap(properties)
 }
 
+// ToMapProperties converts a Properties object to a map.
 func ToMapProperties(properties Properties) map[string]string {
 	return properties.ToMap()
 }
 
+// NewMessageValidator creates a new validator for Message.
 func NewMessageValidator() func(msg *Message) error {
 	validate := validator.New(validator.WithRequiredStructEnabled())
 
