@@ -29,7 +29,8 @@ func TestMessage(t *testing.T) {
 			"stage":           "stage",
 		}
 
-		msg, err := stream.FromMapProperties(input)
+		var msg stream.MessageProperties
+		err := stream.FromMapProperties(input, &msg)
 		require.NoError(t, err)
 
 		require.Equal(t, stream.MessageProperties{
@@ -49,13 +50,14 @@ func TestMessage(t *testing.T) {
 			Stage:           "stage",
 		}, msg)
 
-		propertiesOut := stream.ToMapProperties(msg)
+		propertiesOut := stream.ToMapProperties(&msg)
 		require.Equal(t, input, propertiesOut)
 
 		t.Run("invalid receivedAt format", func(t *testing.T) {
-			msg, err := stream.FromMapProperties(map[string]string{
+			var msg stream.MessageProperties
+			err := stream.FromMapProperties(map[string]string{
 				"receivedAt": time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.Kitchen),
-			})
+			}, &msg)
 			require.Empty(t, msg)
 			require.EqualError(t, err, `parsing receivedAt: parsing time "2:30AM" as "2006-01-02T15:04:05.999999999Z07:00": cannot parse "2:30AM" as "2006"`)
 		})
@@ -86,11 +88,11 @@ func TestMessage(t *testing.T) {
 			}
 		}`
 
-		msg := stream.Message{}
+		msg := stream.Message{Properties: &stream.MessageProperties{}}
 		err := json.Unmarshal([]byte(input), &msg)
 		require.NoError(t, err)
 		require.Equal(t, stream.Message{
-			Properties: stream.MessageProperties{
+			Properties: &stream.MessageProperties{
 				MessageID:       "messageID",
 				RoutingKey:      "routingKey",
 				WorkspaceID:     "workspaceID",
@@ -121,7 +123,7 @@ func TestMessage(t *testing.T) {
 		validator := stream.NewMessageValidator()
 
 		msg := stream.Message{
-			Properties: stream.MessageProperties{
+			Properties: &stream.MessageProperties{
 				MessageID:   "messageID",
 				RoutingKey:  "routingKey",
 				WorkspaceID: "workspaceID",
@@ -144,7 +146,7 @@ func TestMessage(t *testing.T) {
 		validator := stream.NewMessageValidator()
 
 		msg := stream.Message{
-			Properties: stream.MessageProperties{
+			Properties: &stream.MessageProperties{
 				MessageID:   "",
 				RoutingKey:  "routingKey",
 				WorkspaceID: "workspaceID",

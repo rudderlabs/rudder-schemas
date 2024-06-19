@@ -26,8 +26,13 @@ const (
 )
 
 type Message struct {
-	Properties MessageProperties `json:"properties" validate:"required"`
-	Payload    json.RawMessage   `json:"payload" validate:"required"`
+	Properties Properties      `json:"properties" validate:"required"`
+	Payload    json.RawMessage `json:"payload" validate:"required"`
+}
+
+type Properties interface {
+	FromMap(map[string]string) error
+	ToMap() map[string]string
 }
 
 type MessageProperties struct {
@@ -37,59 +42,93 @@ type MessageProperties struct {
 	SourceID        string    `json:"sourceID" validate:"required"`
 	ReceivedAt      time.Time `json:"receivedAt" validate:"required"`
 	RequestIP       string    `json:"requestIP" validate:"required"`
-	DestinationID   string    `json:"destinationID,omitempty"`   // optional
-	UserID          string    `json:"userID,omitempty"`          // optional
-	SourceJobRunID  string    `json:"sourceJobRunID,omitempty"`  // optional
-	SourceTaskRunID string    `json:"sourceTaskRunID,omitempty"` // optional
-	TraceID         string    `json:"traceID,omitempty"`         // optional
-	SourceType      string    `json:"sourceType,omitempty"`      // optional
-	Reason          string    `json:"reason,omitempty"`          // optional
-	Stage           string    `json:"stage,omitempty"`           // optional
+	DestinationID   string    `json:"destinationID,omitempty"`
+	UserID          string    `json:"userID,omitempty"`
+	SourceJobRunID  string    `json:"sourceJobRunID,omitempty"`
+	SourceTaskRunID string    `json:"sourceTaskRunID,omitempty"`
+	TraceID         string    `json:"traceID,omitempty"`
+	SourceType      string    `json:"sourceType,omitempty"`
+	Reason          string    `json:"reason,omitempty"`
+	Stage           string    `json:"stage,omitempty"`
 }
 
-// FromMapProperties converts a property map to MessageProperties.
-func FromMapProperties(properties map[string]string) (MessageProperties, error) {
+func (m *MessageProperties) FromMap(properties map[string]string) error {
 	receivedAt, err := time.Parse(time.RFC3339Nano, properties[mapKeyReceivedAt])
 	if err != nil {
-		return MessageProperties{}, fmt.Errorf("parsing receivedAt: %w", err)
+		return fmt.Errorf("parsing receivedAt: %w", err)
 	}
 
-	return MessageProperties{
-		MessageID:       properties[mapKeyMessageID],
-		RoutingKey:      properties[mapKeyRoutingKey],
-		WorkspaceID:     properties[mapKeyWorkspaceID],
-		RequestIP:       properties[mapKeyRequestIP],
-		UserID:          properties[mapKeyUserID],
-		SourceID:        properties[mapKeySourceID],
-		DestinationID:   properties[mapKeyDestinationID],
-		ReceivedAt:      receivedAt,
-		SourceJobRunID:  properties[mapKeySourceJobRunID],
-		SourceTaskRunID: properties[mapKeySourceTaskRunID],
-		TraceID:         properties[mapKeyTraceID],
-		SourceType:      properties[mapKeySourceType],
-		Reason:          properties[mapKeyReason],
-		Stage:           properties[mapKeyStage],
-	}, nil
+	m.MessageID = properties[mapKeyMessageID]
+	m.RoutingKey = properties[mapKeyRoutingKey]
+	m.WorkspaceID = properties[mapKeyWorkspaceID]
+	m.SourceID = properties[mapKeySourceID]
+	m.ReceivedAt = receivedAt
+	m.RequestIP = properties[mapKeyRequestIP]
+	m.DestinationID = properties[mapKeyDestinationID]
+	m.UserID = properties[mapKeyUserID]
+	m.SourceJobRunID = properties[mapKeySourceJobRunID]
+	m.SourceTaskRunID = properties[mapKeySourceTaskRunID]
+	m.TraceID = properties[mapKeyTraceID]
+	m.SourceType = properties[mapKeySourceType]
+	m.Reason = properties[mapKeyReason]
+	m.Stage = properties[mapKeyStage]
+
+	return nil
 }
 
-// ToMapProperties converts a Message to map properties.
-func ToMapProperties(properties MessageProperties) map[string]string {
+func (m MessageProperties) ToMap() map[string]string {
 	return map[string]string{
-		mapKeyMessageID:       properties.MessageID,
-		mapKeyRoutingKey:      properties.RoutingKey,
-		mapKeyWorkspaceID:     properties.WorkspaceID,
-		mapKeyUserID:          properties.UserID,
-		mapKeySourceID:        properties.SourceID,
-		mapKeyDestinationID:   properties.DestinationID,
-		mapKeyRequestIP:       properties.RequestIP,
-		mapKeyReceivedAt:      properties.ReceivedAt.Format(time.RFC3339Nano),
-		mapKeySourceJobRunID:  properties.SourceJobRunID,
-		mapKeySourceTaskRunID: properties.SourceTaskRunID,
-		mapKeyTraceID:         properties.TraceID,
-		mapKeySourceType:      properties.SourceType,
-		mapKeyReason:          properties.Reason,
-		mapKeyStage:           properties.Stage,
+		mapKeyMessageID:       m.MessageID,
+		mapKeyRoutingKey:      m.RoutingKey,
+		mapKeyWorkspaceID:     m.WorkspaceID,
+		mapKeySourceID:        m.SourceID,
+		mapKeyDestinationID:   m.DestinationID,
+		mapKeyRequestIP:       m.RequestIP,
+		mapKeyReceivedAt:      m.ReceivedAt.Format(time.RFC3339Nano),
+		mapKeyUserID:          m.UserID,
+		mapKeySourceJobRunID:  m.SourceJobRunID,
+		mapKeySourceTaskRunID: m.SourceTaskRunID,
+		mapKeyTraceID:         m.TraceID,
+		mapKeySourceType:      m.SourceType,
+		mapKeyReason:          m.Reason,
+		mapKeyStage:           m.Stage,
 	}
+}
+
+type WebhookProperties struct {
+	WorkspaceID string `json:"workspaceID" validate:"required"`
+	SourceID    string `json:"sourceID" validate:"required"`
+	SourceType  string `json:"sourceType,omitempty" validate:"required"`
+	Reason      string `json:"reason,omitempty" validate:"required"`
+	Stage       string `json:"stage,omitempty" validate:"required"`
+}
+
+func (w *WebhookProperties) FromMap(properties map[string]string) error {
+	w.WorkspaceID = properties[mapKeyWorkspaceID]
+	w.SourceID = properties[mapKeySourceID]
+	w.SourceType = properties[mapKeySourceType]
+	w.Reason = properties[mapKeyReason]
+	w.Stage = properties[mapKeyStage]
+
+	return nil
+}
+
+func (w WebhookProperties) ToMap() map[string]string {
+	return map[string]string{
+		mapKeyWorkspaceID: w.WorkspaceID,
+		mapKeySourceID:    w.SourceID,
+		mapKeySourceType:  w.SourceType,
+		mapKeyReason:      w.Reason,
+		mapKeyStage:       w.Stage,
+	}
+}
+
+func FromMapProperties(properties map[string]string, prop Properties) error {
+	return prop.FromMap(properties)
+}
+
+func ToMapProperties(properties Properties) map[string]string {
+	return properties.ToMap()
 }
 
 func NewMessageValidator() func(msg *Message) error {
