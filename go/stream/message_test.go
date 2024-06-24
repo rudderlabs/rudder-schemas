@@ -13,40 +13,40 @@ import (
 func TestMessage(t *testing.T) {
 	t.Run("properties to/from: pulsar", func(t *testing.T) {
 		input := map[string]string{
-			"messageID":       "messageID",
-			"routingKey":      "routingKey",
-			"workspaceID":     "workspaceID",
-			"userID":          "userID",
-			"sourceID":        "sourceID",
-			"destinationID":   "destinationID",
-			"requestIP":       "10.29.13.20",
-			"receivedAt":      time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
-			"sourceJobRunID":  "sourceJobRunID",
-			"sourceTaskRunID": "sourceTaskRunID",
-			"traceID":         "traceID",
-			"sourceType":      "sourceType",
-			"reason":          "reason",
-			"stage":           "stage",
+			"messageID":            "messageID",
+			"routingKey":           "routingKey",
+			"workspaceID":          "workspaceID",
+			"userID":               "userID",
+			"sourceID":             "sourceID",
+			"destinationID":        "destinationID",
+			"requestIP":            "10.29.13.20",
+			"receivedAt":           time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
+			"sourceJobRunID":       "sourceJobRunID",
+			"sourceTaskRunID":      "sourceTaskRunID",
+			"traceID":              "traceID",
+			"sourceType":           "sourceType",
+			"webhookFailureReason": "webhookFailureReason",
+			"stage":                "stage",
 		}
 
 		msg, err := stream.FromMapProperties(input)
 		require.NoError(t, err)
 
 		require.Equal(t, stream.MessageProperties{
-			MessageID:       "messageID",
-			RoutingKey:      "routingKey",
-			WorkspaceID:     "workspaceID",
-			UserID:          "userID",
-			SourceID:        "sourceID",
-			DestinationID:   "destinationID",
-			RequestIP:       "10.29.13.20",
-			ReceivedAt:      time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
-			SourceJobRunID:  "sourceJobRunID",
-			SourceTaskRunID: "sourceTaskRunID",
-			TraceID:         "traceID",
-			SourceType:      "sourceType",
-			Reason:          "reason",
-			Stage:           "stage",
+			MessageID:            "messageID",
+			RoutingKey:           "routingKey",
+			WorkspaceID:          "workspaceID",
+			UserID:               "userID",
+			SourceID:             "sourceID",
+			DestinationID:        "destinationID",
+			RequestIP:            "10.29.13.20",
+			ReceivedAt:           time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
+			SourceJobRunID:       "sourceJobRunID",
+			SourceTaskRunID:      "sourceTaskRunID",
+			TraceID:              "traceID",
+			SourceType:           "sourceType",
+			WebhookFailureReason: "webhookFailureReason",
+			Stage:                "stage",
 		}, msg)
 
 		propertiesOut := stream.ToMapProperties(msg)
