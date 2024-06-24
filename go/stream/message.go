@@ -11,20 +11,20 @@ import (
 const (
 	StageWebhook = "webhook"
 
-	mapKeyMessageID       = "messageID"
-	mapKeyRoutingKey      = "routingKey"
-	mapKeyWorkspaceID     = "workspaceID"
-	mapKeySourceID        = "sourceID"
-	mapKeyDestinationID   = "destinationID"
-	mapKeyRequestIP       = "requestIP"
-	mapKeyReceivedAt      = "receivedAt"
-	mapKeyUserID          = "userID"
-	mapKeySourceJobRunID  = "sourceJobRunID"
-	mapKeySourceTaskRunID = "sourceTaskRunID"
-	mapKeyTraceID         = "traceID"
-	mapKeySourceType      = "sourceType"
-	mapKeyReason          = "reason"
-	mapKeyStage           = "stage"
+	mapKeyMessageID            = "messageID"
+	mapKeyRoutingKey           = "routingKey"
+	mapKeyWorkspaceID          = "workspaceID"
+	mapKeySourceID             = "sourceID"
+	mapKeyDestinationID        = "destinationID"
+	mapKeyRequestIP            = "requestIP"
+	mapKeyReceivedAt           = "receivedAt"
+	mapKeyUserID               = "userID"
+	mapKeySourceJobRunID       = "sourceJobRunID"
+	mapKeySourceTaskRunID      = "sourceTaskRunID"
+	mapKeyTraceID              = "traceID"
+	mapKeySourceType           = "sourceType"
+	mapKeyWebhookFailureReason = "webhookFailureReason"
+	mapKeyStage                = "stage"
 )
 
 type Message struct {
@@ -69,7 +69,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		SourceTaskRunID:      properties[mapKeySourceTaskRunID],
 		TraceID:              properties[mapKeyTraceID],
 		SourceType:           properties[mapKeySourceType],
-		WebhookFailureReason: properties[mapKeyReason],
+		WebhookFailureReason: properties[mapKeyWebhookFailureReason],
 		Stage:                properties[mapKeyStage],
 	}, nil
 }
@@ -91,7 +91,7 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 	}
 	if properties.Stage == StageWebhook {
 		m[mapKeySourceType] = properties.SourceType
-		m[mapKeyReason] = properties.WebhookFailureReason
+		m[mapKeyWebhookFailureReason] = properties.WebhookFailureReason
 		m[mapKeyStage] = properties.Stage
 	}
 	return m
