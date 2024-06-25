@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.4.0...v0.5.0) (2024-06-25)
+
+
+### Features
+
+* addition properties sourceType, webhookFailureReason, stage for webhook ([#17](https://github.com/rudderlabs/rudder-schemas/issues/17)) ([9bff470](https://github.com/rudderlabs/rudder-schemas/commit/9bff4703d06a1b7c2a02abdb08ea9aeeb9afce67))
+
 ## [0.4.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.3.0...v0.4.0) (2024-04-22)
 
 
