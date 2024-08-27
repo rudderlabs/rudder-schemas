@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.0...v0.5.1) (2024-08-27)
+
+
+### Bug Fixes
+
+* pull-request-title-pattern in packages ([bdaca6c](https://github.com/rudderlabs/rudder-schemas/commit/bdaca6ccc3393cfa016a31e12e31ba8ae9b8b4f6))
+* release please ([#23](https://github.com/rudderlabs/rudder-schemas/issues/23)) ([d4bab48](https://github.com/rudderlabs/rudder-schemas/commit/d4bab482ee32f083edb62dfd12a881146207326b))
+
 ## [0.5.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.4.0...v0.5.0) (2024-06-25)
 
 
