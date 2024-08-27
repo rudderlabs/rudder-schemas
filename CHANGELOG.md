@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.0...v0.5.1) (2024-08-27)
+
+
+### Bug Fixes
+
+* release please ([70f9055](https://github.com/rudderlabs/rudder-schemas/commit/70f905512de8885d16c3deaa78e43dcebc257936))
+
 ## [0.5.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.4.0...v0.5.0) (2024-06-25)
 
 
