@@ -25,6 +25,7 @@ const (
 	mapKeySourceType           = "sourceType"
 	mapKeyWebhookFailureReason = "webhookFailureReason"
 	mapKeyStage                = "stage"
+	mapKeyCompression          = "compression"
 )
 
 type Message struct {
@@ -47,6 +48,7 @@ type MessageProperties struct {
 	SourceType           string    `json:"sourceType,omitempty"`           // optional
 	WebhookFailureReason string    `json:"webhookFailureReason,omitempty"` // optional
 	Stage                string    `json:"stage,omitempty"`                // optional
+	Compression          string    `json:"compression,omitempty"`          // optional
 }
 
 // FromMapProperties converts a property map to MessageProperties.
@@ -71,6 +73,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		SourceType:           properties[mapKeySourceType],
 		WebhookFailureReason: properties[mapKeyWebhookFailureReason],
 		Stage:                properties[mapKeyStage],
+		Compression:          properties[mapKeyCompression],
 	}, nil
 }
 
@@ -88,6 +91,7 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		mapKeySourceJobRunID:  properties.SourceJobRunID,
 		mapKeySourceTaskRunID: properties.SourceTaskRunID,
 		mapKeyTraceID:         properties.TraceID,
+		mapKeyCompression:     properties.Compression,
 	}
 	if properties.Stage == StageWebhook {
 		m[mapKeySourceType] = properties.SourceType
