@@ -15,4 +15,4 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           target-branch: ${{ steps.extract_branch.outputs.branch }}
-          config-file: release-please-config.json
+          config-file: 'release-please-config.json'
