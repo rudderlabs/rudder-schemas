@@ -2,6 +2,8 @@
 
 ## [0.5.1](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.0...v0.5.1) (2024-08-27)
 
+### Features
+* (https://github.com/rudderlabs/rudder-schemas/pull/22) ([ef2fa77](https://github.com/rudderlabs/rudder-schemas/commit/ef2fa777f70b020971e94a0275a0673ee72859e6))
 
 ### Bug Fixes
 
