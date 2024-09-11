@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.1...v0.5.2) (2024-09-11)
+
+
+### Bug Fixes
+
+* add empty commit ([#33](https://github.com/rudderlabs/rudder-schemas/issues/33)) ([16fef7e](https://github.com/rudderlabs/rudder-schemas/commit/16fef7e7d7e7aaac50c87ce02e6a59e24f68a253))
+
 ## [0.5.1](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.0...v0.5.1) (2024-08-27)
 
 ### Features
