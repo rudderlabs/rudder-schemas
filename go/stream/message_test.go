@@ -25,6 +25,8 @@ func TestMessage(t *testing.T) {
 			"sourceTaskRunID": "sourceTaskRunID",
 			"traceID":         "traceID",
 			"compression":     "some-serialized-compression-settings",
+			"encryption":      "some-serialized-encryption-settings",
+			"encryptionKeyID": "encryptionKeyID",
 		}
 
 		msg, err := stream.FromMapProperties(input)
@@ -43,6 +45,8 @@ func TestMessage(t *testing.T) {
 			SourceTaskRunID: "sourceTaskRunID",
 			TraceID:         "traceID",
 			Compression:     "some-serialized-compression-settings",
+			Encryption:      "some-serialized-encryption-settings",
+			EncryptionKeyID: "encryptionKeyID",
 		}, msg)
 
 		propertiesOut := stream.ToMapProperties(msg)
@@ -74,6 +78,8 @@ func TestMessage(t *testing.T) {
 			"webhookFailureReason": "webhookFailureReason",
 			"stage":                stream.StageWebhook,
 			"compression":          "some-serialized-compression-settings",
+			"encryption":           "some-serialized-encryption-settings",
+			"encryptionKeyID":      "encryptionKeyID",
 		}
 
 		msg, err := stream.FromMapProperties(input)
@@ -95,6 +101,8 @@ func TestMessage(t *testing.T) {
 			WebhookFailureReason: "webhookFailureReason",
 			Stage:                stream.StageWebhook,
 			Compression:          "some-serialized-compression-settings",
+			Encryption:           "some-serialized-encryption-settings",
+			EncryptionKeyID:      "encryptionKeyID",
 		}, msg)
 
 		propertiesOut := stream.ToMapProperties(msg)
@@ -116,7 +124,9 @@ func TestMessage(t *testing.T) {
 				"sourceJobRunID": "sourceJobRunID",
 				"sourceTaskRunID": "sourceTaskRunID",
 				"traceID": "traceID",
-				"compression": "some-serialized-compression-settings"
+				"compression": "some-serialized-compression-settings",
+				"encryption": "some-serialized-encryption-settings",
+				"encryptionKeyID": "encryptionKeyID"
 			},
 			"payload": {
 				"key": "value",
@@ -144,6 +154,8 @@ func TestMessage(t *testing.T) {
 				SourceTaskRunID: "sourceTaskRunID",
 				TraceID:         "traceID",
 				Compression:     "some-serialized-compression-settings",
+				Encryption:      "some-serialized-encryption-settings",
+				EncryptionKeyID: "encryptionKeyID",
 			},
 			Payload: json.RawMessage(`{
 				"key": "value",
@@ -177,7 +189,9 @@ func TestMessage(t *testing.T) {
 				"sourceType": "sourceType",
 				"webhookFailureReason": "webhookFailureReason",
 				"stage": "webhook",
-				"compression": "some-serialized-compression-settings"
+				"compression": "some-serialized-compression-settings",
+				"encryption": "some-serialized-encryption-settings",
+				"encryptionKeyID": "encryptionKeyID"
 			},
 			"payload": {
 				"key": "value",
@@ -207,6 +221,8 @@ func TestMessage(t *testing.T) {
 				WebhookFailureReason: "webhookFailureReason",
 				Stage:                stream.StageWebhook,
 				Compression:          "some-serialized-compression-settings",
+				Encryption:           "some-serialized-encryption-settings",
+				EncryptionKeyID:      "encryptionKeyID",
 			},
 			Payload: json.RawMessage(`{
 				"key": "value",
