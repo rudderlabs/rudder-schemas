@@ -36,7 +36,7 @@ type Message struct {
 }
 
 type MessageProperties struct {
-	RequestType          string    `json:"requestType" validate:"required"`
+	RequestType          string    `json:"requestType,omitempty"` // optional, make it required in the next version
 	RoutingKey           string    `json:"routingKey" validate:"required"`
 	WorkspaceID          string    `json:"workspaceID" validate:"required"`
 	SourceID             string    `json:"sourceID" validate:"required"`

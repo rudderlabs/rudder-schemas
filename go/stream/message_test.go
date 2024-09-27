@@ -266,9 +266,9 @@ func TestMessage(t *testing.T) {
 
 		msg := stream.Message{
 			Properties: stream.MessageProperties{
-				RequestType: "",
+				RequestType: "requestType",
 				RoutingKey:  "routingKey",
-				WorkspaceID: "workspaceID",
+				WorkspaceID: "",
 				SourceID:    "sourceID",
 				RequestIP:   "10.29.13.20",
 				ReceivedAt:  time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
@@ -277,6 +277,6 @@ func TestMessage(t *testing.T) {
 		}
 
 		err := validator(&msg)
-		require.EqualError(t, err, "Key: 'Message.Properties.RequestType' Error:Field validation for 'RequestType' failed on the 'required' tag")
+		require.EqualError(t, err, "Key: 'Message.Properties.WorkspaceID' Error:Field validation for 'WorkspaceID' failed on the 'required' tag")
 	})
 }
