@@ -11,7 +11,7 @@ import (
 const (
 	StageWebhook = "webhook"
 
-	mapKeyMessageID            = "messageID"
+	mapKeyRequestType          = "requestType"
 	mapKeyRoutingKey           = "routingKey"
 	mapKeyWorkspaceID          = "workspaceID"
 	mapKeySourceID             = "sourceID"
@@ -36,7 +36,7 @@ type Message struct {
 }
 
 type MessageProperties struct {
-	MessageID            string    `json:"messageID" validate:"required"`
+	RequestType          string    `json:"requestType,omitempty"` // optional, make it required in the next version
 	RoutingKey           string    `json:"routingKey" validate:"required"`
 	WorkspaceID          string    `json:"workspaceID" validate:"required"`
 	SourceID             string    `json:"sourceID" validate:"required"`
@@ -64,7 +64,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 	}
 
 	return MessageProperties{
-		MessageID:            properties[mapKeyMessageID],
+		RequestType:          properties[mapKeyRequestType],
 		RoutingKey:           properties[mapKeyRoutingKey],
 		WorkspaceID:          properties[mapKeyWorkspaceID],
 		RequestIP:            properties[mapKeyRequestIP],
@@ -87,7 +87,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 // ToMapProperties converts a Message to map properties.
 func ToMapProperties(properties MessageProperties) map[string]string {
 	m := map[string]string{
-		mapKeyMessageID:       properties.MessageID,
+		mapKeyRequestType:     properties.RequestType,
 		mapKeyRoutingKey:      properties.RoutingKey,
 		mapKeyWorkspaceID:     properties.WorkspaceID,
 		mapKeyUserID:          properties.UserID,

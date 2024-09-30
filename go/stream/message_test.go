@@ -13,7 +13,7 @@ import (
 func TestMessage(t *testing.T) {
 	t.Run("properties to/from: pulsar", func(t *testing.T) {
 		input := map[string]string{
-			"messageID":       "messageID",
+			"requestType":     "requestType",
 			"routingKey":      "routingKey",
 			"workspaceID":     "workspaceID",
 			"userID":          "userID",
@@ -33,7 +33,7 @@ func TestMessage(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, stream.MessageProperties{
-			MessageID:       "messageID",
+			RequestType:     "requestType",
 			RoutingKey:      "routingKey",
 			WorkspaceID:     "workspaceID",
 			UserID:          "userID",
@@ -63,7 +63,7 @@ func TestMessage(t *testing.T) {
 
 	t.Run("properties to/from: pulsar with webhook stage", func(t *testing.T) {
 		input := map[string]string{
-			"messageID":            "messageID",
+			"requestType":          "requestType",
 			"routingKey":           "routingKey",
 			"workspaceID":          "workspaceID",
 			"userID":               "userID",
@@ -86,7 +86,7 @@ func TestMessage(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, stream.MessageProperties{
-			MessageID:            "messageID",
+			RequestType:          "requestType",
 			RoutingKey:           "routingKey",
 			WorkspaceID:          "workspaceID",
 			UserID:               "userID",
@@ -113,7 +113,7 @@ func TestMessage(t *testing.T) {
 		input := `
 		{
 			"properties": {
-				"messageID": "messageID",
+				"requestType": "requestType",
 				"routingKey": "routingKey",
 				"workspaceID": "workspaceID",
 				"userID": "userID",
@@ -142,7 +142,7 @@ func TestMessage(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, stream.Message{
 			Properties: stream.MessageProperties{
-				MessageID:       "messageID",
+				RequestType:     "requestType",
 				RoutingKey:      "routingKey",
 				WorkspaceID:     "workspaceID",
 				UserID:          "userID",
@@ -175,7 +175,7 @@ func TestMessage(t *testing.T) {
 		input := `
 		{
 			"properties": {
-				"messageID": "messageID",
+				"requestType": "requestType",
 				"routingKey": "routingKey",
 				"workspaceID": "workspaceID",
 				"userID": "userID",
@@ -207,7 +207,7 @@ func TestMessage(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, stream.Message{
 			Properties: stream.MessageProperties{
-				MessageID:       "messageID",
+				RequestType:     "requestType",
 				RoutingKey:      "routingKey",
 				WorkspaceID:     "workspaceID",
 				UserID:          "userID",
@@ -243,7 +243,7 @@ func TestMessage(t *testing.T) {
 
 		msg := stream.Message{
 			Properties: stream.MessageProperties{
-				MessageID:   "messageID",
+				RequestType: "requestType",
 				RoutingKey:  "routingKey",
 				WorkspaceID: "workspaceID",
 				SourceID:    "sourceID",
@@ -266,9 +266,9 @@ func TestMessage(t *testing.T) {
 
 		msg := stream.Message{
 			Properties: stream.MessageProperties{
-				MessageID:   "",
+				RequestType: "requestType",
 				RoutingKey:  "routingKey",
-				WorkspaceID: "workspaceID",
+				WorkspaceID: "",
 				SourceID:    "sourceID",
 				RequestIP:   "10.29.13.20",
 				ReceivedAt:  time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
@@ -277,6 +277,6 @@ func TestMessage(t *testing.T) {
 		}
 
 		err := validator(&msg)
-		require.EqualError(t, err, "Key: 'Message.Properties.MessageID' Error:Field validation for 'MessageID' failed on the 'required' tag")
+		require.EqualError(t, err, "Key: 'Message.Properties.WorkspaceID' Error:Field validation for 'WorkspaceID' failed on the 'required' tag")
 	})
 }
