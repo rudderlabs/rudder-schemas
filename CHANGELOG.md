@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.3](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.2...v0.5.3) (2024-09-30)
+
+
+### Bug Fixes
+
+* message properties should contain reqType instead of messageID [PIPE-1557] ([#35](https://github.com/rudderlabs/rudder-schemas/issues/35)) ([85e4694](https://github.com/rudderlabs/rudder-schemas/commit/85e4694e7bab733b1c1bf5bad1fbc0af375caf02))
+
 ## [0.5.2](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.1...v0.5.2) (2024-09-11)
 
 
