@@ -279,4 +279,30 @@ func TestMessage(t *testing.T) {
 		err := validator(&msg)
 		require.EqualError(t, err, "Key: 'Message.Properties.WorkspaceID' Error:Field validation for 'WorkspaceID' failed on the 'required' tag")
 	})
+
+	t.Run("string conversion", func(t *testing.T) {
+		properties := stream.MessageProperties{
+			RequestType:          "requestType",
+			RoutingKey:           "routingKey",
+			WorkspaceID:          "workspaceID",
+			SourceID:             "sourceID",
+			ReceivedAt:           time.Date(2024, 8, 1, 2, 30, 50, 200, time.UTC),
+			RequestIP:            "10.29.13.20",
+			DestinationID:        "destinationID",
+			UserID:               "userID",
+			SourceJobRunID:       "sourceJobRunID",
+			SourceTaskRunID:      "sourceTaskRunID",
+			TraceID:              "traceID",
+			SourceType:           "sourceType",
+			WebhookFailureReason: "webhookFailureReason",
+			Stage:                stream.StageWebhook,
+			Compression:          "some-serialized-compression-settings",
+			Encryption:           "some-serialized-encryption-settings",
+			EncryptionKeyID:      "encryptionKeyID",
+		}
+
+		expectedString := "RequestType: requestType, RoutingKey: routingKey, WorkspaceID: workspaceID, SourceID: sourceID, ReceivedAt: 2024-08-01 02:30:50.0000002 +0000 UTC, RequestIP: 10.29.13.20, DestinationID: destinationID, UserID: userID, SourceJobRunID: sourceJobRunID, SourceTaskRunID: sourceTaskRunID, TraceID: traceID, SourceType: sourceType, WebhookFailureReason: webhookFailureReason, Stage: webhook, Compression: some-serialized-compression-settings, Encryption: some-serialized-encryption-settings, EncryptionKeyID: encryptionKeyID"
+
+		require.Equal(t, expectedString, properties.String())
+	})
 }

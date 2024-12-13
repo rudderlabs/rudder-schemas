@@ -56,6 +56,11 @@ type MessageProperties struct {
 	EncryptionKeyID string `json:"encryptionKeyID,omitempty"` // optional
 }
 
+func (m MessageProperties) String() string {
+	return fmt.Sprintf("RequestType: %s, RoutingKey: %s, WorkspaceID: %s, SourceID: %s, ReceivedAt: %s, RequestIP: %s, DestinationID: %s, UserID: %s, SourceJobRunID: %s, SourceTaskRunID: %s, TraceID: %s, SourceType: %s, WebhookFailureReason: %s, Stage: %s, Compression: %s, Encryption: %s, EncryptionKeyID: %s",
+		m.RequestType, m.RoutingKey, m.WorkspaceID, m.SourceID, m.ReceivedAt, m.RequestIP, m.DestinationID, m.UserID, m.SourceJobRunID, m.SourceTaskRunID, m.TraceID, m.SourceType, m.WebhookFailureReason, m.Stage, m.Compression, m.Encryption, m.EncryptionKeyID)
+}
+
 // FromMapProperties converts a property map to MessageProperties.
 func FromMapProperties(properties map[string]string) (MessageProperties, error) {
 	receivedAt, err := time.Parse(time.RFC3339Nano, properties[mapKeyReceivedAt])
