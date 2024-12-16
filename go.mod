@@ -3,7 +3,7 @@ module github.com/rudderlabs/rudder-schemas
 go 1.23.1
 
 require (
-	github.com/go-playground/validator/v10 v10.22.1
+	github.com/go-playground/validator/v10 v10.23.0
 	github.com/rudderlabs/rudder-go-kit v0.45.0
 )
 
