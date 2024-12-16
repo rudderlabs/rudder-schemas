@@ -33,26 +33,14 @@ const (
 )
 
 var (
-	keysToLog = []string{
-		mapKeyRequestType,
-		mapKeyRoutingKey,
-		mapKeyWorkspaceID,
-		mapKeySourceID,
-		mapKeyDestinationID,
-		mapKeyRequestIP,
-		mapKeyReceivedAt,
-		mapKeyUserID,
-		mapKeySourceJobRunID,
-		mapKeySourceTaskRunID,
-		mapKeyTraceID,
-		mapKeySourceType,
-		mapKeyWebhookFailureReason,
-		mapKeyStage,
-		mapKeyCompression,
-		mapKeyEncryption,
-		mapKeyEncryptionKeyID,
-	}
+	messagePropertiesDefaultSize      int
+	messagePropertiesStageWebhookSize int
 )
+
+func init() {
+	messagePropertiesDefaultSize = len(ToMapProperties(MessageProperties{}))
+	messagePropertiesStageWebhookSize = len(ToMapProperties(MessageProperties{Stage: StageWebhook}))
+}
 
 type Message struct {
 	Properties MessageProperties `json:"properties" validate:"required"`
@@ -81,11 +69,32 @@ type MessageProperties struct {
 }
 
 func (m MessageProperties) LoggerFields() []logger.Field {
-	mapProperties := ToMapProperties(m)
-	fields := make([]logger.Field, 0, len(keysToLog))
-	for _, key := range keysToLog {
-		fields = append(fields, logger.NewStringField(key, mapProperties[key]))
+	var fields []logger.Field
+
+	if m.Stage == StageWebhook {
+		fields = make([]logger.Field, 0, messagePropertiesStageWebhookSize)
+		fields = append(fields, logger.NewStringField(mapKeySourceType, m.SourceType))
+		fields = append(fields, logger.NewStringField(mapKeyWebhookFailureReason, m.WebhookFailureReason))
+		fields = append(fields, logger.NewStringField(mapKeyStage, m.Stage))
+	} else {
+		fields = make([]logger.Field, 0, messagePropertiesDefaultSize)
 	}
+
+	fields = append(fields, logger.NewStringField(mapKeyRequestType, m.RequestType))
+	fields = append(fields, logger.NewStringField(mapKeyRoutingKey, m.RoutingKey))
+	fields = append(fields, logger.NewStringField(mapKeyWorkspaceID, m.WorkspaceID))
+	fields = append(fields, logger.NewStringField(mapKeyUserID, m.UserID))
+	fields = append(fields, logger.NewStringField(mapKeySourceID, m.SourceID))
+	fields = append(fields, logger.NewStringField(mapKeyDestinationID, m.DestinationID))
+	fields = append(fields, logger.NewStringField(mapKeyRequestIP, m.RequestIP))
+	fields = append(fields, logger.NewStringField(mapKeyReceivedAt, m.ReceivedAt.Format(time.RFC3339Nano)))
+	fields = append(fields, logger.NewStringField(mapKeySourceJobRunID, m.SourceJobRunID))
+	fields = append(fields, logger.NewStringField(mapKeySourceTaskRunID, m.SourceTaskRunID))
+	fields = append(fields, logger.NewStringField(mapKeyTraceID, m.TraceID))
+	fields = append(fields, logger.NewStringField(mapKeyCompression, m.Compression))
+	fields = append(fields, logger.NewStringField(mapKeyEncryption, m.Encryption))
+	fields = append(fields, logger.NewStringField(mapKeyEncryptionKeyID, m.EncryptionKeyID))
+
 	return fields
 }
 
