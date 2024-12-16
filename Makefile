@@ -1,4 +1,4 @@
-GOLANGCI=github.com/golangci/golangci-lint/cmd/golangci-lint@v1.57.1
+GOLANGCI=github.com/golangci/golangci-lint/cmd/golangci-lint@v1.61.0
 gofumpt=mvdan.cc/gofumpt@latest
 
 # Generate labels for all language runtimes
