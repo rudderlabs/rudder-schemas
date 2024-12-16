@@ -32,6 +32,28 @@ const (
 	mapKeyEncryptionKeyID      = "encryptionKeyID"
 )
 
+var (
+	keysToLog = []string{
+		mapKeyRequestType,
+		mapKeyRoutingKey,
+		mapKeyWorkspaceID,
+		mapKeySourceID,
+		mapKeyDestinationID,
+		mapKeyRequestIP,
+		mapKeyReceivedAt,
+		mapKeyUserID,
+		mapKeySourceJobRunID,
+		mapKeySourceTaskRunID,
+		mapKeyTraceID,
+		mapKeySourceType,
+		mapKeyWebhookFailureReason,
+		mapKeyStage,
+		mapKeyCompression,
+		mapKeyEncryption,
+		mapKeyEncryptionKeyID,
+	}
+)
+
 type Message struct {
 	Properties MessageProperties `json:"properties" validate:"required"`
 	Payload    json.RawMessage   `json:"payload" validate:"required"`
@@ -60,25 +82,6 @@ type MessageProperties struct {
 
 func (m MessageProperties) LoggerFields() []logger.Field {
 	mapProperties := ToMapProperties(m)
-	keysToLog := []string{
-		mapKeyRequestType,
-		mapKeyRoutingKey,
-		mapKeyWorkspaceID,
-		mapKeySourceID,
-		mapKeyDestinationID,
-		mapKeyRequestIP,
-		mapKeyReceivedAt,
-		mapKeyUserID,
-		mapKeySourceJobRunID,
-		mapKeySourceTaskRunID,
-		mapKeyTraceID,
-		mapKeySourceType,
-		mapKeyWebhookFailureReason,
-		mapKeyStage,
-		mapKeyCompression,
-		mapKeyEncryption,
-		mapKeyEncryptionKeyID,
-	}
 	fields := make([]logger.Field, 0, len(keysToLog))
 	for _, key := range keysToLog {
 		fields = append(fields, logger.NewStringField(key, mapProperties[key]))
