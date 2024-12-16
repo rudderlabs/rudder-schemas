@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/rudderlabs/rudder-go-kit/logger"
+
 	"github.com/stretchr/testify/require"
 
 	"github.com/rudderlabs/rudder-schemas/go/stream"
@@ -280,7 +282,7 @@ func TestMessage(t *testing.T) {
 		require.EqualError(t, err, "Key: 'Message.Properties.WorkspaceID' Error:Field validation for 'WorkspaceID' failed on the 'required' tag")
 	})
 
-	t.Run("string conversion", func(t *testing.T) {
+	t.Run("logger fields", func(t *testing.T) {
 		properties := stream.MessageProperties{
 			RequestType:          "requestType",
 			RoutingKey:           "routingKey",
@@ -301,8 +303,26 @@ func TestMessage(t *testing.T) {
 			EncryptionKeyID:      "encryptionKeyID",
 		}
 
-		expectedString := "RequestType: requestType, RoutingKey: routingKey, WorkspaceID: workspaceID, SourceID: sourceID, ReceivedAt: 2024-08-01 02:30:50.0000002 +0000 UTC, RequestIP: 10.29.13.20, DestinationID: destinationID, UserID: userID, SourceJobRunID: sourceJobRunID, SourceTaskRunID: sourceTaskRunID, TraceID: traceID, SourceType: sourceType, WebhookFailureReason: webhookFailureReason, Stage: webhook, Compression: some-serialized-compression-settings, Encryption: some-serialized-encryption-settings, EncryptionKeyID: encryptionKeyID"
+		expectedFields := []logger.Field{
+			logger.NewStringField("requestType", "requestType"),
+			logger.NewStringField("routingKey", "routingKey"),
+			logger.NewStringField("workspaceID", "workspaceID"),
+			logger.NewStringField("sourceID", "sourceID"),
+			logger.NewStringField("destinationID", "destinationID"),
+			logger.NewStringField("requestIP", "10.29.13.20"),
+			logger.NewStringField("receivedAt", "2024-08-01T02:30:50.0000002Z"),
+			logger.NewStringField("userID", "userID"),
+			logger.NewStringField("sourceJobRunID", "sourceJobRunID"),
+			logger.NewStringField("sourceTaskRunID", "sourceTaskRunID"),
+			logger.NewStringField("traceID", "traceID"),
+			logger.NewStringField("sourceType", "sourceType"),
+			logger.NewStringField("webhookFailureReason", "webhookFailureReason"),
+			logger.NewStringField("stage", "webhook"),
+			logger.NewStringField("compression", "some-serialized-compression-settings"),
+			logger.NewStringField("encryption", "some-serialized-encryption-settings"),
+			logger.NewStringField("encryptionKeyID", "encryptionKeyID"),
+		}
 
-		require.Equal(t, expectedString, properties.String())
+		require.Equal(t, expectedFields, properties.LoggerFields())
 	})
 }

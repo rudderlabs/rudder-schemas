@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+
+	"github.com/rudderlabs/rudder-go-kit/logger"
 )
 
 const (
@@ -56,9 +58,32 @@ type MessageProperties struct {
 	EncryptionKeyID string `json:"encryptionKeyID,omitempty"` // optional
 }
 
-func (m MessageProperties) String() string {
-	return fmt.Sprintf("RequestType: %s, RoutingKey: %s, WorkspaceID: %s, SourceID: %s, ReceivedAt: %s, RequestIP: %s, DestinationID: %s, UserID: %s, SourceJobRunID: %s, SourceTaskRunID: %s, TraceID: %s, SourceType: %s, WebhookFailureReason: %s, Stage: %s, Compression: %s, Encryption: %s, EncryptionKeyID: %s",
-		m.RequestType, m.RoutingKey, m.WorkspaceID, m.SourceID, m.ReceivedAt, m.RequestIP, m.DestinationID, m.UserID, m.SourceJobRunID, m.SourceTaskRunID, m.TraceID, m.SourceType, m.WebhookFailureReason, m.Stage, m.Compression, m.Encryption, m.EncryptionKeyID)
+func (m MessageProperties) LoggerFields() []logger.Field {
+	mapProperties := ToMapProperties(m)
+	keysToLog := []string{
+		mapKeyRequestType,
+		mapKeyRoutingKey,
+		mapKeyWorkspaceID,
+		mapKeySourceID,
+		mapKeyDestinationID,
+		mapKeyRequestIP,
+		mapKeyReceivedAt,
+		mapKeyUserID,
+		mapKeySourceJobRunID,
+		mapKeySourceTaskRunID,
+		mapKeyTraceID,
+		mapKeySourceType,
+		mapKeyWebhookFailureReason,
+		mapKeyStage,
+		mapKeyCompression,
+		mapKeyEncryption,
+		mapKeyEncryptionKeyID,
+	}
+	fields := make([]logger.Field, 0, len(keysToLog))
+	for _, key := range keysToLog {
+		fields = append(fields, logger.NewStringField(key, mapProperties[key]))
+	}
+	return fields
 }
 
 // FromMapProperties converts a property map to MessageProperties.
