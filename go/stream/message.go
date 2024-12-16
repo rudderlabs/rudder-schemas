@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/go-playground/validator/v10"
+	validate "github.com/go-playground/validator/v10"
 
 	"github.com/rudderlabs/rudder-go-kit/logger"
 )
@@ -141,9 +141,9 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 }
 
 func NewMessageValidator() func(msg *Message) error {
-	validate := validator.New(validator.WithRequiredStructEnabled())
+	validator := validate.New(validate.WithRequiredStructEnabled())
 
 	return func(msg *Message) error {
-		return validate.Struct(msg)
+		return validator.Struct(msg)
 	}
 }

@@ -2,8 +2,6 @@ module github.com/rudderlabs/rudder-schemas
 
 go 1.23.1
 
-toolchain go1.23.3
-
 require (
 	github.com/go-playground/validator/v10 v10.22.1
 	github.com/rudderlabs/rudder-go-kit v0.45.0
