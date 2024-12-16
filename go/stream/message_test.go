@@ -281,7 +281,7 @@ func TestMessage(t *testing.T) {
 		require.EqualError(t, err, "Key: 'Message.Properties.WorkspaceID' Error:Field validation for 'WorkspaceID' failed on the 'required' tag")
 	})
 
-	t.Run("logger fields", func(t *testing.T) {
+	t.Run("logger fields - webhook stage", func(t *testing.T) {
 		properties := stream.MessageProperties{
 			RequestType:          "requestType",
 			RoutingKey:           "routingKey",
@@ -317,6 +317,45 @@ func TestMessage(t *testing.T) {
 			logger.NewStringField("sourceType", "sourceType"),
 			logger.NewStringField("webhookFailureReason", "webhookFailureReason"),
 			logger.NewStringField("stage", "webhook"),
+			logger.NewStringField("compression", "some-serialized-compression-settings"),
+			logger.NewStringField("encryption", "some-serialized-encryption-settings"),
+			logger.NewStringField("encryptionKeyID", "encryptionKeyID"),
+		}
+
+		require.ElementsMatch(t, expectedFields, properties.LoggerFields())
+	})
+
+	t.Run("logger fields - non-webhook stage", func(t *testing.T) {
+		properties := stream.MessageProperties{
+			RequestType:     "requestType",
+			RoutingKey:      "routingKey",
+			WorkspaceID:     "workspaceID",
+			SourceID:        "sourceID",
+			ReceivedAt:      time.Date(2024, 8, 1, 2, 30, 50, 200, time.UTC),
+			RequestIP:       "10.29.13.20",
+			DestinationID:   "destinationID",
+			UserID:          "userID",
+			SourceJobRunID:  "sourceJobRunID",
+			SourceTaskRunID: "sourceTaskRunID",
+			TraceID:         "traceID",
+			SourceType:      "sourceType",
+			Compression:     "some-serialized-compression-settings",
+			Encryption:      "some-serialized-encryption-settings",
+			EncryptionKeyID: "encryptionKeyID",
+		}
+
+		expectedFields := []logger.Field{
+			logger.NewStringField("requestType", "requestType"),
+			logger.NewStringField("routingKey", "routingKey"),
+			logger.NewStringField("workspaceID", "workspaceID"),
+			logger.NewStringField("sourceID", "sourceID"),
+			logger.NewStringField("destinationID", "destinationID"),
+			logger.NewStringField("requestIP", "10.29.13.20"),
+			logger.NewStringField("receivedAt", "2024-08-01T02:30:50.0000002Z"),
+			logger.NewStringField("userID", "userID"),
+			logger.NewStringField("sourceJobRunID", "sourceJobRunID"),
+			logger.NewStringField("sourceTaskRunID", "sourceTaskRunID"),
+			logger.NewStringField("traceID", "traceID"),
 			logger.NewStringField("compression", "some-serialized-compression-settings"),
 			logger.NewStringField("encryption", "some-serialized-encryption-settings"),
 			logger.NewStringField("encryptionKeyID", "encryptionKeyID"),

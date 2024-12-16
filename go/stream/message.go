@@ -33,14 +33,9 @@ const (
 )
 
 var (
-	messagePropertiesDefaultSize      int
-	messagePropertiesStageWebhookSize int
-)
-
-func init() {
-	messagePropertiesDefaultSize = len(ToMapProperties(MessageProperties{}))
+	messagePropertiesDefaultSize      = len(ToMapProperties(MessageProperties{}))
 	messagePropertiesStageWebhookSize = len(ToMapProperties(MessageProperties{Stage: StageWebhook}))
-}
+)
 
 type Message struct {
 	Properties MessageProperties `json:"properties" validate:"required"`
