@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.4](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.3...v0.5.4) (2024-12-18)
+
+
+### Miscellaneous Chores
+
+* empty commit to fix release ([#42](https://github.com/rudderlabs/rudder-schemas/issues/42)) ([9d4fbce](https://github.com/rudderlabs/rudder-schemas/commit/9d4fbceb0a12e1c42382bd9c39fb76c304ff056c))
+
 ## [0.5.3](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.2...v0.5.3) (2024-09-30)
 
 
