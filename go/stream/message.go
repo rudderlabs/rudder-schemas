@@ -43,7 +43,7 @@ type Message struct {
 }
 
 type MessageProperties struct {
-	RequestType          string    `json:"requestType,omitempty"` // optional, make it required in the next version
+	RequestType          string    `json:"requestType" validate:"required"`
 	RoutingKey           string    `json:"routingKey" validate:"required"`
 	WorkspaceID          string    `json:"workspaceID" validate:"required"`
 	SourceID             string    `json:"sourceID" validate:"required"`
@@ -147,9 +147,23 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 	return m
 }
 
-func NewMessageValidator() func(msg *Message) error {
+func NewMessageValidator(opt ...func(message *Message) error) func(msg *Message) error {
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	return func(msg *Message) error {
+		for _, v := range opt {
+			if err := v(msg); err != nil {
+				return err
+			}
+		}
 		return validate.Struct(msg)
+	}
+}
+
+func WithEncryptionPropertiesValidator() func(msg *Message) error {
+	return func(msg *Message) error {
+		if msg.Properties.Encryption != "" && msg.Properties.EncryptionKeyID == "" {
+			return fmt.Errorf("encryption key id is required when encryption is enabled")
+		}
+		return nil
 	}
 }

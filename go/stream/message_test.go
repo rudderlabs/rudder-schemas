@@ -262,7 +262,32 @@ func TestMessage(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	t.Run("validation Err", func(t *testing.T) {
+	t.Run("validation ok - with encryption", func(t *testing.T) {
+		validator := stream.NewMessageValidator()
+
+		msg := stream.Message{
+			Properties: stream.MessageProperties{
+				RequestType:     "requestType",
+				RoutingKey:      "routingKey",
+				WorkspaceID:     "workspaceID",
+				SourceID:        "sourceID",
+				ReceivedAt:      time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
+				RequestIP:       "10.29.13.20",
+				Encryption:      "some-serialized-encryption-settings",
+				EncryptionKeyID: "encryptionKeyID",
+				// missing optional:
+				// UserID:      "userID",
+				// SourceJobRunID:  "sourceJobRunID",
+				// SourceTaskRunID: "sourceTaskRunID",
+				// TraceID:         "traceID",
+			},
+			Payload: json.RawMessage(`{}`),
+		}
+		err := validator(&msg)
+		require.NoError(t, err)
+	})
+
+	t.Run("validation Err: without encryption properties", func(t *testing.T) {
 		validator := stream.NewMessageValidator()
 
 		msg := stream.Message{
@@ -279,6 +304,26 @@ func TestMessage(t *testing.T) {
 
 		err := validator(&msg)
 		require.EqualError(t, err, "Key: 'Message.Properties.WorkspaceID' Error:Field validation for 'WorkspaceID' failed on the 'required' tag")
+	})
+
+	t.Run("validation Err: with encryption properties", func(t *testing.T) {
+		validator := stream.NewMessageValidator(stream.WithEncryptionPropertiesValidator())
+
+		msg := stream.Message{
+			Properties: stream.MessageProperties{
+				RequestType: "requestType",
+				RoutingKey:  "routingKey",
+				WorkspaceID: "workspace-id",
+				SourceID:    "sourceID",
+				RequestIP:   "10.29.13.20",
+				ReceivedAt:  time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
+				Encryption:  "some-serialized-encryption-settings",
+			},
+			Payload: json.RawMessage(`{}`),
+		}
+
+		err := validator(&msg)
+		require.EqualError(t, err, "encryption key id is required when encryption is enabled")
 	})
 
 	t.Run("logger fields - webhook stage", func(t *testing.T) {
