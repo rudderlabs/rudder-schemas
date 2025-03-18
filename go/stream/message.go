@@ -154,12 +154,23 @@ func NewMessageValidator() func(msg *Message) error {
 	}
 }
 
-func NewMessagePropertiesValidator() func(properties *MessageProperties) error {
+func NewMessagePropertiesValidator(opt ...func(properties *MessageProperties) error) func(properties *MessageProperties) error {
 	validate := validator.New(validator.WithRequiredStructEnabled())
+	return func(properties *MessageProperties) error {
+		for _, o := range opt {
+			if err := o(properties); err != nil {
+				return err
+			}
+		}
+		return validate.Struct(properties)
+	}
+}
+
+func WithEncryptionPropertiesValidator() func(properties *MessageProperties) error {
 	return func(properties *MessageProperties) error {
 		if properties.Encryption != "" && properties.EncryptionKeyID == "" {
 			return fmt.Errorf("encryption key ID is required when encryption is set")
 		}
-		return validate.Struct(properties)
+		return nil
 	}
 }

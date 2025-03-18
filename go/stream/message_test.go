@@ -282,8 +282,7 @@ func TestMessage(t *testing.T) {
 	})
 
 	t.Run("validation Err: with encryption properties", func(t *testing.T) {
-		validator := stream.NewMessagePropertiesValidator()
-
+		validator := stream.NewMessagePropertiesValidator(stream.WithEncryptionPropertiesValidator())
 		msg := stream.Message{
 			Properties: stream.MessageProperties{
 				RequestType: "requestType",
@@ -299,6 +298,25 @@ func TestMessage(t *testing.T) {
 
 		err := validator(&msg.Properties)
 		require.EqualError(t, err, "encryption key ID is required when encryption is set")
+	})
+
+	t.Run("validation ok: without encryption properties", func(t *testing.T) {
+		validator := stream.NewMessagePropertiesValidator()
+		msg := stream.Message{
+			Properties: stream.MessageProperties{
+				RequestType: "requestType",
+				RoutingKey:  "routingKey",
+				WorkspaceID: "workspace-id",
+				SourceID:    "sourceID",
+				RequestIP:   "10.29.13.20",
+				ReceivedAt:  time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
+				Encryption:  "some-serialized-encryption-settings",
+			},
+			Payload: json.RawMessage(`{}`),
+		}
+
+		err := validator(&msg.Properties)
+		require.NoError(t, err)
 	})
 
 	t.Run("validation ok", func(t *testing.T) {
