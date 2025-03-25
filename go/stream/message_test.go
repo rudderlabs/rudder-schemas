@@ -319,7 +319,7 @@ func TestMessage(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	t.Run("validation ok", func(t *testing.T) {
+	t.Run("validation ok: encryption properties", func(t *testing.T) {
 		validator := stream.NewMessagePropertiesValidator()
 
 		msg := stream.Message{
