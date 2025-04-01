@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.5](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.4...v0.5.5) (2025-04-01)
+
+
+### Bug Fixes
+
+* update GitHub Actions workflow and release config ([#58](https://github.com/rudderlabs/rudder-schemas/issues/58)) ([fd3dd5c](https://github.com/rudderlabs/rudder-schemas/commit/fd3dd5ca67de72d74a422c0bb4dad154ac910cb0))
+
 ## [0.5.4](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.3...v0.5.4) (2024-12-18)
 
 
