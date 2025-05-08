@@ -3,6 +3,7 @@ package stream
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -30,6 +31,10 @@ const (
 	mapKeyCompression          = "compression"
 	mapKeyEncryption           = "encryption"
 	mapKeyEncryptionKeyID      = "encryptionKeyID"
+	mapKeyIsBot                = "isBot"
+	mapKeyBotName              = "botName"
+	mapKeyBotURL               = "botURL"
+	mapKeyBotUnknownBrowser    = "botUnknownBrowser"
 )
 
 var (
@@ -59,6 +64,10 @@ type MessageProperties struct {
 	Stage                string    `json:"stage,omitempty"`                // optional
 	Compression          string    `json:"compression,omitempty"`          // optional
 	Encryption           string    `json:"encryption,omitempty"`           // optional
+	IsBot                bool      `json:"isBot,omitempty"`                // optional
+	BotName              string    `json:"botName,omitempty"`              // optional
+	BotURL               string    `json:"botURL,omitempty"`               // optional
+	BotUnknownBrowser    bool      `json:"botUnknownBrowser,omitempty"`    // optional
 	// if key is rotated EncryptionKeyID should be used to refer to correct key
 	EncryptionKeyID string `json:"encryptionKeyID,omitempty"` // optional
 }
@@ -89,7 +98,10 @@ func (m MessageProperties) LoggerFields() []logger.Field {
 	fields = append(fields, logger.NewStringField(mapKeyCompression, m.Compression))
 	fields = append(fields, logger.NewStringField(mapKeyEncryption, m.Encryption))
 	fields = append(fields, logger.NewStringField(mapKeyEncryptionKeyID, m.EncryptionKeyID))
-
+	fields = append(fields, logger.NewBoolField(mapKeyIsBot, m.IsBot))
+	fields = append(fields, logger.NewStringField(mapKeyBotName, m.BotName))
+	fields = append(fields, logger.NewStringField(mapKeyBotURL, m.BotURL))
+	fields = append(fields, logger.NewBoolField(mapKeyBotUnknownBrowser, m.BotUnknownBrowser))
 	return fields
 }
 
@@ -98,6 +110,21 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 	receivedAt, err := time.Parse(time.RFC3339Nano, properties[mapKeyReceivedAt])
 	if err != nil {
 		return MessageProperties{}, fmt.Errorf("parsing receivedAt: %w", err)
+	}
+
+	var isBot, botUnknownBrowser bool
+	if properties[mapKeyIsBot] != "" {
+		isBot, err = strconv.ParseBool(properties[mapKeyIsBot])
+		if err != nil {
+			return MessageProperties{}, fmt.Errorf("parsing isBot: %w", err)
+		}
+	}
+
+	if properties[mapKeyBotUnknownBrowser] != "" {
+		botUnknownBrowser, err = strconv.ParseBool(properties[mapKeyBotUnknownBrowser])
+		if err != nil {
+			return MessageProperties{}, fmt.Errorf("parsing botUnknownBrowser: %w", err)
+		}
 	}
 
 	return MessageProperties{
@@ -118,6 +145,10 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		Compression:          properties[mapKeyCompression],
 		Encryption:           properties[mapKeyEncryption],
 		EncryptionKeyID:      properties[mapKeyEncryptionKeyID],
+		IsBot:                isBot,
+		BotName:              properties[mapKeyBotName],
+		BotURL:               properties[mapKeyBotURL],
+		BotUnknownBrowser:    botUnknownBrowser,
 	}, nil
 }
 
@@ -143,6 +174,12 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		m[mapKeySourceType] = properties.SourceType
 		m[mapKeyWebhookFailureReason] = properties.WebhookFailureReason
 		m[mapKeyStage] = properties.Stage
+	}
+	if properties.IsBot {
+		m[mapKeyIsBot] = strconv.FormatBool(properties.IsBot)
+		m[mapKeyBotName] = properties.BotName
+		m[mapKeyBotURL] = properties.BotURL
+		m[mapKeyBotUnknownBrowser] = strconv.FormatBool(properties.BotUnknownBrowser)
 	}
 	return m
 }
