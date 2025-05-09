@@ -65,9 +65,12 @@ type MessageProperties struct {
 	Compression          string    `json:"compression,omitempty"`          // optional
 	Encryption           string    `json:"encryption,omitempty"`           // optional
 	IsBot                bool      `json:"isBot,omitempty"`                // optional
-	BotName              string    `json:"botName,omitempty"`              // optional
-	BotURL               string    `json:"botURL,omitempty"`               // optional
-	BotIsInvalidBrowser  bool      `json:"botIsInvalidBrowser,omitempty"`  // optional
+	// BotName is the name of the bot that sent the event
+	BotName string `json:"botName,omitempty"` // optional
+	// BotURL is the reference URL why the detected BotName in user agent is labeled as a bot
+	BotURL string `json:"botURL,omitempty"` // optional
+	// BotIsInvalidBrowser is true if event is a bot and the browser is invalid
+	BotIsInvalidBrowser bool `json:"botIsInvalidBrowser,omitempty"` // optional
 	// if key is rotated EncryptionKeyID should be used to refer to correct key
 	EncryptionKeyID string `json:"encryptionKeyID,omitempty"` // optional
 }
