@@ -34,7 +34,7 @@ const (
 	mapKeyIsBot                = "isBot"
 	mapKeyBotName              = "botName"
 	mapKeyBotURL               = "botURL"
-	mapKeyBotUnknownBrowser    = "botUnknownBrowser"
+	mapKeyBotIsInvalidBrowser  = "botIsInvalidBrowser"
 )
 
 var (
@@ -67,7 +67,7 @@ type MessageProperties struct {
 	IsBot                bool      `json:"isBot,omitempty"`                // optional
 	BotName              string    `json:"botName,omitempty"`              // optional
 	BotURL               string    `json:"botURL,omitempty"`               // optional
-	BotUnknownBrowser    bool      `json:"botUnknownBrowser,omitempty"`    // optional
+	BotIsInvalidBrowser  bool      `json:"botIsInvalidBrowser,omitempty"`  // optional
 	// if key is rotated EncryptionKeyID should be used to refer to correct key
 	EncryptionKeyID string `json:"encryptionKeyID,omitempty"` // optional
 }
@@ -99,9 +99,11 @@ func (m MessageProperties) LoggerFields() []logger.Field {
 	fields = append(fields, logger.NewStringField(mapKeyEncryption, m.Encryption))
 	fields = append(fields, logger.NewStringField(mapKeyEncryptionKeyID, m.EncryptionKeyID))
 	fields = append(fields, logger.NewBoolField(mapKeyIsBot, m.IsBot))
-	fields = append(fields, logger.NewStringField(mapKeyBotName, m.BotName))
-	fields = append(fields, logger.NewStringField(mapKeyBotURL, m.BotURL))
-	fields = append(fields, logger.NewBoolField(mapKeyBotUnknownBrowser, m.BotUnknownBrowser))
+	if m.IsBot {
+		fields = append(fields, logger.NewStringField(mapKeyBotName, m.BotName))
+		fields = append(fields, logger.NewStringField(mapKeyBotURL, m.BotURL))
+		fields = append(fields, logger.NewBoolField(mapKeyBotIsInvalidBrowser, m.BotIsInvalidBrowser))
+	}
 	return fields
 }
 
@@ -112,7 +114,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		return MessageProperties{}, fmt.Errorf("parsing receivedAt: %w", err)
 	}
 
-	var isBot, botUnknownBrowser bool
+	var isBot, botIsInvalidBrowser bool
 	if properties[mapKeyIsBot] != "" {
 		isBot, err = strconv.ParseBool(properties[mapKeyIsBot])
 		if err != nil {
@@ -120,10 +122,10 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		}
 	}
 
-	if properties[mapKeyBotUnknownBrowser] != "" {
-		botUnknownBrowser, err = strconv.ParseBool(properties[mapKeyBotUnknownBrowser])
+	if isBot && properties[mapKeyBotIsInvalidBrowser] != "" {
+		botIsInvalidBrowser, err = strconv.ParseBool(properties[mapKeyBotIsInvalidBrowser])
 		if err != nil {
-			return MessageProperties{}, fmt.Errorf("parsing botUnknownBrowser: %w", err)
+			return MessageProperties{}, fmt.Errorf("parsing botIsInvalidBrowser: %w", err)
 		}
 	}
 
@@ -148,7 +150,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		IsBot:                isBot,
 		BotName:              properties[mapKeyBotName],
 		BotURL:               properties[mapKeyBotURL],
-		BotUnknownBrowser:    botUnknownBrowser,
+		BotIsInvalidBrowser:  botIsInvalidBrowser,
 	}, nil
 }
 
@@ -179,7 +181,7 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		m[mapKeyIsBot] = strconv.FormatBool(properties.IsBot)
 		m[mapKeyBotName] = properties.BotName
 		m[mapKeyBotURL] = properties.BotURL
-		m[mapKeyBotUnknownBrowser] = strconv.FormatBool(properties.BotUnknownBrowser)
+		m[mapKeyBotIsInvalidBrowser] = strconv.FormatBool(properties.BotIsInvalidBrowser)
 	}
 	return m
 }
