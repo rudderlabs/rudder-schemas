@@ -64,15 +64,15 @@ type MessageProperties struct {
 	Stage                string    `json:"stage,omitempty"`                // optional
 	Compression          string    `json:"compression,omitempty"`          // optional
 	Encryption           string    `json:"encryption,omitempty"`           // optional
-	IsBot                bool      `json:"isBot,omitempty"`                // optional
+	// if key is rotated EncryptionKeyID should be used to refer to correct key
+	EncryptionKeyID string `json:"encryptionKeyID,omitempty"` // optional
+	IsBot           bool   `json:"isBot,omitempty"`           // optional
 	// BotName is the name of the bot that sent the event
 	BotName string `json:"botName,omitempty"` // optional
-	// BotURL is the reference URL why the detected BotName in user agent is labeled as a bot
+	// BotURL contains the source URL or reference that explains why the user agent was identified as a bot
 	BotURL string `json:"botURL,omitempty"` // optional
 	// BotIsInvalidBrowser is true if event is a bot and the browser is invalid
 	BotIsInvalidBrowser bool `json:"botIsInvalidBrowser,omitempty"` // optional
-	// if key is rotated EncryptionKeyID should be used to refer to correct key
-	EncryptionKeyID string `json:"encryptionKeyID,omitempty"` // optional
 }
 
 func (m MessageProperties) LoggerFields() []logger.Field {
@@ -188,7 +188,7 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		m[mapKeyStage] = properties.Stage
 	}
 	if properties.IsBot {
-		m[mapKeyIsBot] = strconv.FormatBool(properties.IsBot)
+		m[mapKeyIsBot] = "true"
 		m[mapKeyBotName] = properties.BotName
 		m[mapKeyBotURL] = properties.BotURL
 		m[mapKeyBotIsInvalidBrowser] = strconv.FormatBool(properties.BotIsInvalidBrowser)
