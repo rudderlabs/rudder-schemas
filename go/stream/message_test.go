@@ -181,6 +181,30 @@ func TestMessage(t *testing.T) {
 			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
 		})
 
+		t.Run("botIsInvalidBrowser, botName, botURL should not be set even if they are present if isBot is false", func(t *testing.T) {
+			// botIsInvalidBrowser, botName, botURL should not be present if isBot is false, this case should not happen in production
+			msg, err := stream.FromMapProperties(map[string]string{
+				"receivedAt":          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
+				"isBot":               "false",
+				"botIsInvalidBrowser": "true",
+				"botName":             "TestBot",
+				"botURL":              "https://testbot.com",
+			})
+			require.NoError(t, err)
+
+			require.False(t, msg.IsBot)
+			require.Empty(t, msg.BotName)
+			require.Empty(t, msg.BotURL)
+			require.False(t, msg.BotIsInvalidBrowser)
+
+			propertiesOut := stream.ToMapProperties(msg)
+
+			require.NotContains(t, propertiesOut, "isBot")
+			require.NotContains(t, propertiesOut, "botName")
+			require.NotContains(t, propertiesOut, "botURL")
+			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
+		})
+
 		t.Run("invalid isBot format", func(t *testing.T) {
 			msg, err := stream.FromMapProperties(map[string]string{
 				"receivedAt":          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),

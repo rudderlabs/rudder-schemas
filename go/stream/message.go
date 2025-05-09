@@ -115,6 +115,8 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 	}
 
 	var isBot, botIsInvalidBrowser bool
+	var botName, botURL string
+
 	if properties[mapKeyIsBot] != "" {
 		isBot, err = strconv.ParseBool(properties[mapKeyIsBot])
 		if err != nil {
@@ -122,10 +124,15 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		}
 	}
 
-	if isBot && properties[mapKeyBotIsInvalidBrowser] != "" {
-		botIsInvalidBrowser, err = strconv.ParseBool(properties[mapKeyBotIsInvalidBrowser])
-		if err != nil {
-			return MessageProperties{}, fmt.Errorf("parsing botIsInvalidBrowser: %w", err)
+	if isBot {
+		botName = properties[mapKeyBotName]
+		botURL = properties[mapKeyBotURL]
+
+		if properties[mapKeyBotIsInvalidBrowser] != "" {
+			botIsInvalidBrowser, err = strconv.ParseBool(properties[mapKeyBotIsInvalidBrowser])
+			if err != nil {
+				return MessageProperties{}, fmt.Errorf("parsing botIsInvalidBrowser: %w", err)
+			}
 		}
 	}
 
@@ -148,8 +155,8 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		Encryption:           properties[mapKeyEncryption],
 		EncryptionKeyID:      properties[mapKeyEncryptionKeyID],
 		IsBot:                isBot,
-		BotName:              properties[mapKeyBotName],
-		BotURL:               properties[mapKeyBotURL],
+		BotName:              botName,
+		BotURL:               botURL,
 		BotIsInvalidBrowser:  botIsInvalidBrowser,
 	}, nil
 }
