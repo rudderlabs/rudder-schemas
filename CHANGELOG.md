@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.5...v0.6.0) (2025-05-09)
+
+
+### Features
+
+* add bot details as message properties ([#66](https://github.com/rudderlabs/rudder-schemas/issues/66)) ([a7b3808](https://github.com/rudderlabs/rudder-schemas/commit/a7b3808f7cd6673f2375a3863da3e6a7ff1672a9))
+
 ## [0.5.5](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.4...v0.5.5) (2025-04-01)
 
 
