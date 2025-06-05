@@ -111,7 +111,7 @@ func TestMessage(t *testing.T) {
 	})
 
 	t.Run("properties to/from: pulsar with bot fields", func(t *testing.T) {
-		t.Run("isBot is true and shouldFlagBot is false", func(t *testing.T) {
+		t.Run("isBot is true and needsBotEnrichment is false", func(t *testing.T) {
 			input := map[string]string{
 				"requestType":         "requestType",
 				"routingKey":          "routingKey",
@@ -131,7 +131,7 @@ func TestMessage(t *testing.T) {
 				"botName":             "TestBot",
 				"botURL":              "https://testbot.com",
 				"botIsInvalidBrowser": "true",
-				"shouldFlagBot":       "false",
+				"needsBotEnrichment":  "false",
 			}
 
 			msg, err := stream.FromMapProperties(input)
@@ -156,14 +156,14 @@ func TestMessage(t *testing.T) {
 				BotName:             "TestBot",
 				BotURL:              "https://testbot.com",
 				BotIsInvalidBrowser: true,
-				ShouldFlagBot:       false,
+				NeedsBotEnrichment:  false,
 			}, msg)
 
 			propertiesOut := stream.ToMapProperties(msg)
 			require.Equal(t, input, propertiesOut)
 		})
 
-		t.Run("isBot and shouldFlagBot is true", func(t *testing.T) {
+		t.Run("isBot and needsBotEnrichment is true", func(t *testing.T) {
 			input := map[string]string{
 				"requestType":         "requestType",
 				"routingKey":          "routingKey",
@@ -183,7 +183,7 @@ func TestMessage(t *testing.T) {
 				"botName":             "TestBot",
 				"botURL":              "https://testbot.com",
 				"botIsInvalidBrowser": "true",
-				"shouldFlagBot":       "true",
+				"needsBotEnrichment":  "true",
 			}
 
 			msg, err := stream.FromMapProperties(input)
@@ -208,7 +208,7 @@ func TestMessage(t *testing.T) {
 				BotName:             "TestBot",
 				BotURL:              "https://testbot.com",
 				BotIsInvalidBrowser: true,
-				ShouldFlagBot:       true,
+				NeedsBotEnrichment:  true,
 			}, msg)
 
 			propertiesOut := stream.ToMapProperties(msg)
@@ -233,10 +233,10 @@ func TestMessage(t *testing.T) {
 			require.NotContains(t, propertiesOut, "botName")
 			require.NotContains(t, propertiesOut, "botURL")
 			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
-			require.NotContains(t, propertiesOut, "shouldFlagBot")
+			require.NotContains(t, propertiesOut, "needsBotEnrichment")
 		})
 
-		t.Run("botIsInvalidBrowser, botName, botURL, shouldFlagBot should not be set even if they are present if isBot is false", func(t *testing.T) {
+		t.Run("botIsInvalidBrowser, botName, botURL, needsBotEnrichment should not be set even if they are present if isBot is false", func(t *testing.T) {
 			// botIsInvalidBrowser, botName, botURL should not be present if isBot is false, this case should not happen in production
 			msg, err := stream.FromMapProperties(map[string]string{
 				"receivedAt":          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
@@ -244,7 +244,7 @@ func TestMessage(t *testing.T) {
 				"botIsInvalidBrowser": "true",
 				"botName":             "TestBot",
 				"botURL":              "https://testbot.com",
-				"shouldFlagBot":       "true",
+				"needsBotEnrichment":  "true",
 			})
 			require.NoError(t, err)
 
@@ -259,7 +259,7 @@ func TestMessage(t *testing.T) {
 			require.NotContains(t, propertiesOut, "botName")
 			require.NotContains(t, propertiesOut, "botURL")
 			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
-			require.NotContains(t, propertiesOut, "shouldFlagBot")
+			require.NotContains(t, propertiesOut, "needsBotEnrichment")
 		})
 
 		t.Run("invalid isBot format", func(t *testing.T) {
@@ -282,14 +282,14 @@ func TestMessage(t *testing.T) {
 			require.EqualError(t, err, `parsing botIsInvalidBrowser: strconv.ParseBool: parsing "not-a-boolean": invalid syntax`)
 		})
 
-		t.Run("invalid shouldFlagBot format", func(t *testing.T) {
+		t.Run("invalid needsBotEnrichment format", func(t *testing.T) {
 			msg, err := stream.FromMapProperties(map[string]string{
-				"receivedAt":    time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
-				"isBot":         "true",
-				"shouldFlagBot": "not-a-boolean",
+				"receivedAt":         time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
+				"isBot":              "true",
+				"needsBotEnrichment": "not-a-boolean",
 			})
 			require.Empty(t, msg)
-			require.EqualError(t, err, `parsing shouldFlagBot: strconv.ParseBool: parsing "not-a-boolean": invalid syntax`)
+			require.EqualError(t, err, `parsing needsBotEnrichment: strconv.ParseBool: parsing "not-a-boolean": invalid syntax`)
 		})
 	})
 
@@ -478,7 +478,7 @@ func TestMessage(t *testing.T) {
 		require.JSONEq(t, input, string(output))
 	})
 
-	t.Run("message to/from: JSON with shouldFlagBot", func(t *testing.T) {
+	t.Run("message to/from: JSON with needsBotEnrichment", func(t *testing.T) {
 		input := `
 		{
 			"properties": {
@@ -497,7 +497,7 @@ func TestMessage(t *testing.T) {
 				"botName": "TestBot",
 				"botURL": "https://testbot.com",
 				"botIsInvalidBrowser": true,
-				"shouldFlagBot": true
+				"needsBotEnrichment": true
 			},
 			"payload": {
 				"key": "value"
@@ -524,7 +524,7 @@ func TestMessage(t *testing.T) {
 				BotName:             "TestBot",
 				BotURL:              "https://testbot.com",
 				BotIsInvalidBrowser: true,
-				ShouldFlagBot:       true,
+				NeedsBotEnrichment:  true,
 			},
 			Payload: json.RawMessage(`{
 				"key": "value"
@@ -743,7 +743,7 @@ func TestMessage(t *testing.T) {
 			BotName:             "TestBot",
 			BotURL:              "https://testbot.com",
 			BotIsInvalidBrowser: true,
-			ShouldFlagBot:       true,
+			NeedsBotEnrichment:  true,
 		}
 
 		expectedFields := []logger.Field{
@@ -765,7 +765,7 @@ func TestMessage(t *testing.T) {
 			logger.NewStringField("botName", "TestBot"),
 			logger.NewStringField("botURL", "https://testbot.com"),
 			logger.NewBoolField("botIsInvalidBrowser", true),
-			logger.NewBoolField("shouldFlagBot", true),
+			logger.NewBoolField("needsBotEnrichment", true),
 		}
 
 		require.ElementsMatch(t, expectedFields, properties.LoggerFields())

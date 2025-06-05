@@ -35,7 +35,7 @@ const (
 	mapKeyBotName              = "botName"
 	mapKeyBotURL               = "botURL"
 	mapKeyBotIsInvalidBrowser  = "botIsInvalidBrowser"
-	mapKeyShouldFlagBot        = "shouldFlagBot"
+	mapKeyNeedsBotEnrichment   = "needsBotEnrichment"
 )
 
 var (
@@ -74,8 +74,8 @@ type MessageProperties struct {
 	BotURL string `json:"botURL,omitempty"` // optional
 	// BotIsInvalidBrowser is true if event is a bot and the browser is invalid
 	BotIsInvalidBrowser bool `json:"botIsInvalidBrowser,omitempty"` // optional
-	// ShouldFlagBot is true if the event should be flagged as a bot
-	ShouldFlagBot bool `json:"shouldFlagBot,omitempty"` // optional
+	// NeedsBotEnrichment is true if event should be enriched with bot details
+	NeedsBotEnrichment bool `json:"needsBotEnrichment,omitempty"` // optional
 }
 
 func (m MessageProperties) LoggerFields() []logger.Field {
@@ -109,7 +109,7 @@ func (m MessageProperties) LoggerFields() []logger.Field {
 		fields = append(fields, logger.NewStringField(mapKeyBotName, m.BotName))
 		fields = append(fields, logger.NewStringField(mapKeyBotURL, m.BotURL))
 		fields = append(fields, logger.NewBoolField(mapKeyBotIsInvalidBrowser, m.BotIsInvalidBrowser))
-		fields = append(fields, logger.NewBoolField(mapKeyShouldFlagBot, m.ShouldFlagBot))
+		fields = append(fields, logger.NewBoolField(mapKeyNeedsBotEnrichment, m.NeedsBotEnrichment))
 	}
 	return fields
 }
@@ -121,7 +121,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		return MessageProperties{}, fmt.Errorf("parsing receivedAt: %w", err)
 	}
 
-	var isBot, botIsInvalidBrowser, shouldFlagBot bool
+	var isBot, botIsInvalidBrowser, needsBotEnrichment bool
 	var botName, botURL string
 
 	if properties[mapKeyIsBot] != "" {
@@ -142,10 +142,10 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 			}
 		}
 
-		if properties[mapKeyShouldFlagBot] != "" {
-			shouldFlagBot, err = strconv.ParseBool(properties[mapKeyShouldFlagBot])
+		if properties[mapKeyNeedsBotEnrichment] != "" {
+			needsBotEnrichment, err = strconv.ParseBool(properties[mapKeyNeedsBotEnrichment])
 			if err != nil {
-				return MessageProperties{}, fmt.Errorf("parsing shouldFlagBot: %w", err)
+				return MessageProperties{}, fmt.Errorf("parsing needsBotEnrichment: %w", err)
 			}
 		}
 	}
@@ -172,7 +172,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		BotName:              botName,
 		BotURL:               botURL,
 		BotIsInvalidBrowser:  botIsInvalidBrowser,
-		ShouldFlagBot:        shouldFlagBot,
+		NeedsBotEnrichment:   needsBotEnrichment,
 	}, nil
 }
 
@@ -204,7 +204,7 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		m[mapKeyBotName] = properties.BotName
 		m[mapKeyBotURL] = properties.BotURL
 		m[mapKeyBotIsInvalidBrowser] = strconv.FormatBool(properties.BotIsInvalidBrowser)
-		m[mapKeyShouldFlagBot] = strconv.FormatBool(properties.ShouldFlagBot)
+		m[mapKeyNeedsBotEnrichment] = strconv.FormatBool(properties.NeedsBotEnrichment)
 	}
 	return m
 }
