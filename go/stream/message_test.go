@@ -111,104 +111,104 @@ func TestMessage(t *testing.T) {
 	})
 
 	t.Run("properties to/from: pulsar with bot fields", func(t *testing.T) {
-		t.Run("isBot is true and needsBotEnrichment is false", func(t *testing.T) {
+		t.Run("isBot is true and requiresBotEnrichment is false", func(t *testing.T) {
 			input := map[string]string{
-				"requestType":         "requestType",
-				"routingKey":          "routingKey",
-				"workspaceID":         "workspaceID",
-				"userID":              "userID",
-				"sourceID":            "sourceID",
-				"destinationID":       "destinationID",
-				"requestIP":           "10.29.13.20",
-				"receivedAt":          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
-				"sourceJobRunID":      "sourceJobRunID",
-				"sourceTaskRunID":     "sourceTaskRunID",
-				"traceID":             "traceID",
-				"compression":         "some-serialized-compression-settings",
-				"encryption":          "some-serialized-encryption-settings",
-				"encryptionKeyID":     "encryptionKeyID",
-				"isBot":               "true",
-				"botName":             "TestBot",
-				"botURL":              "https://testbot.com",
-				"botIsInvalidBrowser": "true",
-				"needsBotEnrichment":  "false",
+				"requestType":           "requestType",
+				"routingKey":            "routingKey",
+				"workspaceID":           "workspaceID",
+				"userID":                "userID",
+				"sourceID":              "sourceID",
+				"destinationID":         "destinationID",
+				"requestIP":             "10.29.13.20",
+				"receivedAt":            time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
+				"sourceJobRunID":        "sourceJobRunID",
+				"sourceTaskRunID":       "sourceTaskRunID",
+				"traceID":               "traceID",
+				"compression":           "some-serialized-compression-settings",
+				"encryption":            "some-serialized-encryption-settings",
+				"encryptionKeyID":       "encryptionKeyID",
+				"isBot":                 "true",
+				"botName":               "TestBot",
+				"botURL":                "https://testbot.com",
+				"botIsInvalidBrowser":   "true",
+				"requiresBotEnrichment": "false",
 			}
 
 			msg, err := stream.FromMapProperties(input)
 			require.NoError(t, err)
 
 			require.Equal(t, stream.MessageProperties{
-				RequestType:         "requestType",
-				RoutingKey:          "routingKey",
-				WorkspaceID:         "workspaceID",
-				UserID:              "userID",
-				SourceID:            "sourceID",
-				DestinationID:       "destinationID",
-				RequestIP:           "10.29.13.20",
-				ReceivedAt:          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
-				SourceJobRunID:      "sourceJobRunID",
-				SourceTaskRunID:     "sourceTaskRunID",
-				TraceID:             "traceID",
-				Compression:         "some-serialized-compression-settings",
-				Encryption:          "some-serialized-encryption-settings",
-				EncryptionKeyID:     "encryptionKeyID",
-				IsBot:               true,
-				BotName:             "TestBot",
-				BotURL:              "https://testbot.com",
-				BotIsInvalidBrowser: true,
-				NeedsBotEnrichment:  false,
+				RequestType:           "requestType",
+				RoutingKey:            "routingKey",
+				WorkspaceID:           "workspaceID",
+				UserID:                "userID",
+				SourceID:              "sourceID",
+				DestinationID:         "destinationID",
+				RequestIP:             "10.29.13.20",
+				ReceivedAt:            time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
+				SourceJobRunID:        "sourceJobRunID",
+				SourceTaskRunID:       "sourceTaskRunID",
+				TraceID:               "traceID",
+				Compression:           "some-serialized-compression-settings",
+				Encryption:            "some-serialized-encryption-settings",
+				EncryptionKeyID:       "encryptionKeyID",
+				IsBot:                 true,
+				BotName:               "TestBot",
+				BotURL:                "https://testbot.com",
+				BotIsInvalidBrowser:   true,
+				RequiresBotEnrichment: false,
 			}, msg)
 
 			propertiesOut := stream.ToMapProperties(msg)
 			require.Equal(t, input, propertiesOut)
 		})
 
-		t.Run("isBot and needsBotEnrichment is true", func(t *testing.T) {
+		t.Run("isBot and requiresBotEnrichment is true", func(t *testing.T) {
 			input := map[string]string{
-				"requestType":         "requestType",
-				"routingKey":          "routingKey",
-				"workspaceID":         "workspaceID",
-				"userID":              "userID",
-				"sourceID":            "sourceID",
-				"destinationID":       "destinationID",
-				"requestIP":           "10.29.13.20",
-				"receivedAt":          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
-				"sourceJobRunID":      "sourceJobRunID",
-				"sourceTaskRunID":     "sourceTaskRunID",
-				"traceID":             "traceID",
-				"compression":         "some-serialized-compression-settings",
-				"encryption":          "some-serialized-encryption-settings",
-				"encryptionKeyID":     "encryptionKeyID",
-				"isBot":               "true",
-				"botName":             "TestBot",
-				"botURL":              "https://testbot.com",
-				"botIsInvalidBrowser": "true",
-				"needsBotEnrichment":  "true",
+				"requestType":           "requestType",
+				"routingKey":            "routingKey",
+				"workspaceID":           "workspaceID",
+				"userID":                "userID",
+				"sourceID":              "sourceID",
+				"destinationID":         "destinationID",
+				"requestIP":             "10.29.13.20",
+				"receivedAt":            time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
+				"sourceJobRunID":        "sourceJobRunID",
+				"sourceTaskRunID":       "sourceTaskRunID",
+				"traceID":               "traceID",
+				"compression":           "some-serialized-compression-settings",
+				"encryption":            "some-serialized-encryption-settings",
+				"encryptionKeyID":       "encryptionKeyID",
+				"isBot":                 "true",
+				"botName":               "TestBot",
+				"botURL":                "https://testbot.com",
+				"botIsInvalidBrowser":   "true",
+				"requiresBotEnrichment": "true",
 			}
 
 			msg, err := stream.FromMapProperties(input)
 			require.NoError(t, err)
 
 			require.Equal(t, stream.MessageProperties{
-				RequestType:         "requestType",
-				RoutingKey:          "routingKey",
-				WorkspaceID:         "workspaceID",
-				UserID:              "userID",
-				SourceID:            "sourceID",
-				DestinationID:       "destinationID",
-				RequestIP:           "10.29.13.20",
-				ReceivedAt:          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
-				SourceJobRunID:      "sourceJobRunID",
-				SourceTaskRunID:     "sourceTaskRunID",
-				TraceID:             "traceID",
-				Compression:         "some-serialized-compression-settings",
-				Encryption:          "some-serialized-encryption-settings",
-				EncryptionKeyID:     "encryptionKeyID",
-				IsBot:               true,
-				BotName:             "TestBot",
-				BotURL:              "https://testbot.com",
-				BotIsInvalidBrowser: true,
-				NeedsBotEnrichment:  true,
+				RequestType:           "requestType",
+				RoutingKey:            "routingKey",
+				WorkspaceID:           "workspaceID",
+				UserID:                "userID",
+				SourceID:              "sourceID",
+				DestinationID:         "destinationID",
+				RequestIP:             "10.29.13.20",
+				ReceivedAt:            time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
+				SourceJobRunID:        "sourceJobRunID",
+				SourceTaskRunID:       "sourceTaskRunID",
+				TraceID:               "traceID",
+				Compression:           "some-serialized-compression-settings",
+				Encryption:            "some-serialized-encryption-settings",
+				EncryptionKeyID:       "encryptionKeyID",
+				IsBot:                 true,
+				BotName:               "TestBot",
+				BotURL:                "https://testbot.com",
+				BotIsInvalidBrowser:   true,
+				RequiresBotEnrichment: true,
 			}, msg)
 
 			propertiesOut := stream.ToMapProperties(msg)
@@ -233,18 +233,18 @@ func TestMessage(t *testing.T) {
 			require.NotContains(t, propertiesOut, "botName")
 			require.NotContains(t, propertiesOut, "botURL")
 			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
-			require.NotContains(t, propertiesOut, "needsBotEnrichment")
+			require.NotContains(t, propertiesOut, "requiresBotEnrichment")
 		})
 
-		t.Run("botIsInvalidBrowser, botName, botURL, needsBotEnrichment should not be set even if they are present if isBot is false", func(t *testing.T) {
+		t.Run("botIsInvalidBrowser, botName, botURL, requiresBotEnrichment should not be set even if they are present if isBot is false", func(t *testing.T) {
 			// botIsInvalidBrowser, botName, botURL should not be present if isBot is false, this case should not happen in production
 			msg, err := stream.FromMapProperties(map[string]string{
-				"receivedAt":          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
-				"isBot":               "false",
-				"botIsInvalidBrowser": "true",
-				"botName":             "TestBot",
-				"botURL":              "https://testbot.com",
-				"needsBotEnrichment":  "true",
+				"receivedAt":            time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
+				"isBot":                 "false",
+				"botIsInvalidBrowser":   "true",
+				"botName":               "TestBot",
+				"botURL":                "https://testbot.com",
+				"requiresBotEnrichment": "true",
 			})
 			require.NoError(t, err)
 
@@ -259,7 +259,7 @@ func TestMessage(t *testing.T) {
 			require.NotContains(t, propertiesOut, "botName")
 			require.NotContains(t, propertiesOut, "botURL")
 			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
-			require.NotContains(t, propertiesOut, "needsBotEnrichment")
+			require.NotContains(t, propertiesOut, "requiresBotEnrichment")
 		})
 
 		t.Run("invalid isBot format", func(t *testing.T) {
@@ -282,14 +282,14 @@ func TestMessage(t *testing.T) {
 			require.EqualError(t, err, `parsing botIsInvalidBrowser: strconv.ParseBool: parsing "not-a-boolean": invalid syntax`)
 		})
 
-		t.Run("invalid needsBotEnrichment format", func(t *testing.T) {
+		t.Run("invalid requiresBotEnrichment format", func(t *testing.T) {
 			msg, err := stream.FromMapProperties(map[string]string{
-				"receivedAt":         time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
-				"isBot":              "true",
-				"needsBotEnrichment": "not-a-boolean",
+				"receivedAt":            time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
+				"isBot":                 "true",
+				"requiresBotEnrichment": "not-a-boolean",
 			})
 			require.Empty(t, msg)
-			require.EqualError(t, err, `parsing needsBotEnrichment: strconv.ParseBool: parsing "not-a-boolean": invalid syntax`)
+			require.EqualError(t, err, `parsing requiresBotEnrichment: strconv.ParseBool: parsing "not-a-boolean": invalid syntax`)
 		})
 	})
 
@@ -478,7 +478,7 @@ func TestMessage(t *testing.T) {
 		require.JSONEq(t, input, string(output))
 	})
 
-	t.Run("message to/from: JSON with needsBotEnrichment", func(t *testing.T) {
+	t.Run("message to/from: JSON with requiresBotEnrichment", func(t *testing.T) {
 		input := `
 		{
 			"properties": {
@@ -497,7 +497,7 @@ func TestMessage(t *testing.T) {
 				"botName": "TestBot",
 				"botURL": "https://testbot.com",
 				"botIsInvalidBrowser": true,
-				"needsBotEnrichment": true
+				"requiresBotEnrichment": true
 			},
 			"payload": {
 				"key": "value"
@@ -509,22 +509,22 @@ func TestMessage(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, stream.Message{
 			Properties: stream.MessageProperties{
-				RequestType:         "requestType",
-				RoutingKey:          "routingKey",
-				WorkspaceID:         "workspaceID",
-				UserID:              "userID",
-				SourceID:            "sourceID",
-				DestinationID:       "destinationID",
-				RequestIP:           "10.29.13.20",
-				ReceivedAt:          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
-				SourceJobRunID:      "sourceJobRunID",
-				SourceTaskRunID:     "sourceTaskRunID",
-				TraceID:             "traceID",
-				IsBot:               true,
-				BotName:             "TestBot",
-				BotURL:              "https://testbot.com",
-				BotIsInvalidBrowser: true,
-				NeedsBotEnrichment:  true,
+				RequestType:           "requestType",
+				RoutingKey:            "routingKey",
+				WorkspaceID:           "workspaceID",
+				UserID:                "userID",
+				SourceID:              "sourceID",
+				DestinationID:         "destinationID",
+				RequestIP:             "10.29.13.20",
+				ReceivedAt:            time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
+				SourceJobRunID:        "sourceJobRunID",
+				SourceTaskRunID:       "sourceTaskRunID",
+				TraceID:               "traceID",
+				IsBot:                 true,
+				BotName:               "TestBot",
+				BotURL:                "https://testbot.com",
+				BotIsInvalidBrowser:   true,
+				RequiresBotEnrichment: true,
 			},
 			Payload: json.RawMessage(`{
 				"key": "value"
@@ -724,26 +724,26 @@ func TestMessage(t *testing.T) {
 
 	t.Run("logger fields - bot fields", func(t *testing.T) {
 		properties := stream.MessageProperties{
-			RequestType:         "requestType",
-			RoutingKey:          "routingKey",
-			WorkspaceID:         "workspaceID",
-			SourceID:            "sourceID",
-			ReceivedAt:          time.Date(2024, 8, 1, 2, 30, 50, 200, time.UTC),
-			RequestIP:           "10.29.13.20",
-			DestinationID:       "destinationID",
-			UserID:              "userID",
-			SourceJobRunID:      "sourceJobRunID",
-			SourceTaskRunID:     "sourceTaskRunID",
-			TraceID:             "traceID",
-			SourceType:          "sourceType",
-			Compression:         "some-serialized-compression-settings",
-			Encryption:          "some-serialized-encryption-settings",
-			EncryptionKeyID:     "encryptionKeyID",
-			IsBot:               true,
-			BotName:             "TestBot",
-			BotURL:              "https://testbot.com",
-			BotIsInvalidBrowser: true,
-			NeedsBotEnrichment:  true,
+			RequestType:           "requestType",
+			RoutingKey:            "routingKey",
+			WorkspaceID:           "workspaceID",
+			SourceID:              "sourceID",
+			ReceivedAt:            time.Date(2024, 8, 1, 2, 30, 50, 200, time.UTC),
+			RequestIP:             "10.29.13.20",
+			DestinationID:         "destinationID",
+			UserID:                "userID",
+			SourceJobRunID:        "sourceJobRunID",
+			SourceTaskRunID:       "sourceTaskRunID",
+			TraceID:               "traceID",
+			SourceType:            "sourceType",
+			Compression:           "some-serialized-compression-settings",
+			Encryption:            "some-serialized-encryption-settings",
+			EncryptionKeyID:       "encryptionKeyID",
+			IsBot:                 true,
+			BotName:               "TestBot",
+			BotURL:                "https://testbot.com",
+			BotIsInvalidBrowser:   true,
+			RequiresBotEnrichment: true,
 		}
 
 		expectedFields := []logger.Field{
@@ -765,7 +765,7 @@ func TestMessage(t *testing.T) {
 			logger.NewStringField("botName", "TestBot"),
 			logger.NewStringField("botURL", "https://testbot.com"),
 			logger.NewBoolField("botIsInvalidBrowser", true),
-			logger.NewBoolField("needsBotEnrichment", true),
+			logger.NewBoolField("requiresBotEnrichment", true),
 		}
 
 		require.ElementsMatch(t, expectedFields, properties.LoggerFields())

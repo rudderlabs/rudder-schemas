@@ -14,28 +14,28 @@ import (
 const (
 	StageWebhook = "webhook"
 
-	mapKeyRequestType          = "requestType"
-	mapKeyRoutingKey           = "routingKey"
-	mapKeyWorkspaceID          = "workspaceID"
-	mapKeySourceID             = "sourceID"
-	mapKeyDestinationID        = "destinationID"
-	mapKeyRequestIP            = "requestIP"
-	mapKeyReceivedAt           = "receivedAt"
-	mapKeyUserID               = "userID"
-	mapKeySourceJobRunID       = "sourceJobRunID"
-	mapKeySourceTaskRunID      = "sourceTaskRunID"
-	mapKeyTraceID              = "traceID"
-	mapKeySourceType           = "sourceType"
-	mapKeyWebhookFailureReason = "webhookFailureReason"
-	mapKeyStage                = "stage"
-	mapKeyCompression          = "compression"
-	mapKeyEncryption           = "encryption"
-	mapKeyEncryptionKeyID      = "encryptionKeyID"
-	mapKeyIsBot                = "isBot"
-	mapKeyBotName              = "botName"
-	mapKeyBotURL               = "botURL"
-	mapKeyBotIsInvalidBrowser  = "botIsInvalidBrowser"
-	mapKeyNeedsBotEnrichment   = "needsBotEnrichment"
+	mapKeyRequestType           = "requestType"
+	mapKeyRoutingKey            = "routingKey"
+	mapKeyWorkspaceID           = "workspaceID"
+	mapKeySourceID              = "sourceID"
+	mapKeyDestinationID         = "destinationID"
+	mapKeyRequestIP             = "requestIP"
+	mapKeyReceivedAt            = "receivedAt"
+	mapKeyUserID                = "userID"
+	mapKeySourceJobRunID        = "sourceJobRunID"
+	mapKeySourceTaskRunID       = "sourceTaskRunID"
+	mapKeyTraceID               = "traceID"
+	mapKeySourceType            = "sourceType"
+	mapKeyWebhookFailureReason  = "webhookFailureReason"
+	mapKeyStage                 = "stage"
+	mapKeyCompression           = "compression"
+	mapKeyEncryption            = "encryption"
+	mapKeyEncryptionKeyID       = "encryptionKeyID"
+	mapKeyIsBot                 = "isBot"
+	mapKeyBotName               = "botName"
+	mapKeyBotURL                = "botURL"
+	mapKeyBotIsInvalidBrowser   = "botIsInvalidBrowser"
+	mapKeyRequiresBotEnrichment = "requiresBotEnrichment"
 )
 
 var (
@@ -74,8 +74,8 @@ type MessageProperties struct {
 	BotURL string `json:"botURL,omitempty"` // optional
 	// BotIsInvalidBrowser is true if event is a bot and the browser is invalid
 	BotIsInvalidBrowser bool `json:"botIsInvalidBrowser,omitempty"` // optional
-	// NeedsBotEnrichment is true if event should be enriched with bot details
-	NeedsBotEnrichment bool `json:"needsBotEnrichment,omitempty"` // optional
+	// RequiresBotEnrichment is true if event should be enriched with bot details
+	RequiresBotEnrichment bool `json:"requiresBotEnrichment,omitempty"` // optional
 }
 
 func (m MessageProperties) LoggerFields() []logger.Field {
@@ -109,7 +109,7 @@ func (m MessageProperties) LoggerFields() []logger.Field {
 		fields = append(fields, logger.NewStringField(mapKeyBotName, m.BotName))
 		fields = append(fields, logger.NewStringField(mapKeyBotURL, m.BotURL))
 		fields = append(fields, logger.NewBoolField(mapKeyBotIsInvalidBrowser, m.BotIsInvalidBrowser))
-		fields = append(fields, logger.NewBoolField(mapKeyNeedsBotEnrichment, m.NeedsBotEnrichment))
+		fields = append(fields, logger.NewBoolField(mapKeyRequiresBotEnrichment, m.RequiresBotEnrichment))
 	}
 	return fields
 }
@@ -121,7 +121,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		return MessageProperties{}, fmt.Errorf("parsing receivedAt: %w", err)
 	}
 
-	var isBot, botIsInvalidBrowser, needsBotEnrichment bool
+	var isBot, botIsInvalidBrowser, requiresBotEnrichment bool
 	var botName, botURL string
 
 	if properties[mapKeyIsBot] != "" {
@@ -142,37 +142,37 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 			}
 		}
 
-		if properties[mapKeyNeedsBotEnrichment] != "" {
-			needsBotEnrichment, err = strconv.ParseBool(properties[mapKeyNeedsBotEnrichment])
+		if properties[mapKeyRequiresBotEnrichment] != "" {
+			requiresBotEnrichment, err = strconv.ParseBool(properties[mapKeyRequiresBotEnrichment])
 			if err != nil {
-				return MessageProperties{}, fmt.Errorf("parsing needsBotEnrichment: %w", err)
+				return MessageProperties{}, fmt.Errorf("parsing requiresBotEnrichment: %w", err)
 			}
 		}
 	}
 
 	return MessageProperties{
-		RequestType:          properties[mapKeyRequestType],
-		RoutingKey:           properties[mapKeyRoutingKey],
-		WorkspaceID:          properties[mapKeyWorkspaceID],
-		RequestIP:            properties[mapKeyRequestIP],
-		UserID:               properties[mapKeyUserID],
-		SourceID:             properties[mapKeySourceID],
-		DestinationID:        properties[mapKeyDestinationID],
-		ReceivedAt:           receivedAt,
-		SourceJobRunID:       properties[mapKeySourceJobRunID],
-		SourceTaskRunID:      properties[mapKeySourceTaskRunID],
-		TraceID:              properties[mapKeyTraceID],
-		SourceType:           properties[mapKeySourceType],
-		WebhookFailureReason: properties[mapKeyWebhookFailureReason],
-		Stage:                properties[mapKeyStage],
-		Compression:          properties[mapKeyCompression],
-		Encryption:           properties[mapKeyEncryption],
-		EncryptionKeyID:      properties[mapKeyEncryptionKeyID],
-		IsBot:                isBot,
-		BotName:              botName,
-		BotURL:               botURL,
-		BotIsInvalidBrowser:  botIsInvalidBrowser,
-		NeedsBotEnrichment:   needsBotEnrichment,
+		RequestType:           properties[mapKeyRequestType],
+		RoutingKey:            properties[mapKeyRoutingKey],
+		WorkspaceID:           properties[mapKeyWorkspaceID],
+		RequestIP:             properties[mapKeyRequestIP],
+		UserID:                properties[mapKeyUserID],
+		SourceID:              properties[mapKeySourceID],
+		DestinationID:         properties[mapKeyDestinationID],
+		ReceivedAt:            receivedAt,
+		SourceJobRunID:        properties[mapKeySourceJobRunID],
+		SourceTaskRunID:       properties[mapKeySourceTaskRunID],
+		TraceID:               properties[mapKeyTraceID],
+		SourceType:            properties[mapKeySourceType],
+		WebhookFailureReason:  properties[mapKeyWebhookFailureReason],
+		Stage:                 properties[mapKeyStage],
+		Compression:           properties[mapKeyCompression],
+		Encryption:            properties[mapKeyEncryption],
+		EncryptionKeyID:       properties[mapKeyEncryptionKeyID],
+		IsBot:                 isBot,
+		BotName:               botName,
+		BotURL:                botURL,
+		BotIsInvalidBrowser:   botIsInvalidBrowser,
+		RequiresBotEnrichment: requiresBotEnrichment,
 	}, nil
 }
 
@@ -204,7 +204,7 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		m[mapKeyBotName] = properties.BotName
 		m[mapKeyBotURL] = properties.BotURL
 		m[mapKeyBotIsInvalidBrowser] = strconv.FormatBool(properties.BotIsInvalidBrowser)
-		m[mapKeyNeedsBotEnrichment] = strconv.FormatBool(properties.NeedsBotEnrichment)
+		m[mapKeyRequiresBotEnrichment] = strconv.FormatBool(properties.RequiresBotEnrichment)
 	}
 	return m
 }
