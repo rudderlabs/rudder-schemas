@@ -111,7 +111,7 @@ func TestMessage(t *testing.T) {
 	})
 
 	t.Run("properties to/from: pulsar with bot fields", func(t *testing.T) {
-		t.Run("isBot is true", func(t *testing.T) {
+		t.Run("isBot is true and shouldFlagBot is false", func(t *testing.T) {
 			input := map[string]string{
 				"requestType":         "requestType",
 				"routingKey":          "routingKey",
@@ -131,6 +131,7 @@ func TestMessage(t *testing.T) {
 				"botName":             "TestBot",
 				"botURL":              "https://testbot.com",
 				"botIsInvalidBrowser": "true",
+				"shouldFlagBot":       "false",
 			}
 
 			msg, err := stream.FromMapProperties(input)
@@ -155,6 +156,59 @@ func TestMessage(t *testing.T) {
 				BotName:             "TestBot",
 				BotURL:              "https://testbot.com",
 				BotIsInvalidBrowser: true,
+				ShouldFlagBot:       false,
+			}, msg)
+
+			propertiesOut := stream.ToMapProperties(msg)
+			require.Equal(t, input, propertiesOut)
+		})
+
+		t.Run("isBot and shouldFlagBot is true", func(t *testing.T) {
+			input := map[string]string{
+				"requestType":         "requestType",
+				"routingKey":          "routingKey",
+				"workspaceID":         "workspaceID",
+				"userID":              "userID",
+				"sourceID":            "sourceID",
+				"destinationID":       "destinationID",
+				"requestIP":           "10.29.13.20",
+				"receivedAt":          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
+				"sourceJobRunID":      "sourceJobRunID",
+				"sourceTaskRunID":     "sourceTaskRunID",
+				"traceID":             "traceID",
+				"compression":         "some-serialized-compression-settings",
+				"encryption":          "some-serialized-encryption-settings",
+				"encryptionKeyID":     "encryptionKeyID",
+				"isBot":               "true",
+				"botName":             "TestBot",
+				"botURL":              "https://testbot.com",
+				"botIsInvalidBrowser": "true",
+				"shouldFlagBot":       "true",
+			}
+
+			msg, err := stream.FromMapProperties(input)
+			require.NoError(t, err)
+
+			require.Equal(t, stream.MessageProperties{
+				RequestType:         "requestType",
+				RoutingKey:          "routingKey",
+				WorkspaceID:         "workspaceID",
+				UserID:              "userID",
+				SourceID:            "sourceID",
+				DestinationID:       "destinationID",
+				RequestIP:           "10.29.13.20",
+				ReceivedAt:          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
+				SourceJobRunID:      "sourceJobRunID",
+				SourceTaskRunID:     "sourceTaskRunID",
+				TraceID:             "traceID",
+				Compression:         "some-serialized-compression-settings",
+				Encryption:          "some-serialized-encryption-settings",
+				EncryptionKeyID:     "encryptionKeyID",
+				IsBot:               true,
+				BotName:             "TestBot",
+				BotURL:              "https://testbot.com",
+				BotIsInvalidBrowser: true,
+				ShouldFlagBot:       true,
 			}, msg)
 
 			propertiesOut := stream.ToMapProperties(msg)
@@ -179,9 +233,10 @@ func TestMessage(t *testing.T) {
 			require.NotContains(t, propertiesOut, "botName")
 			require.NotContains(t, propertiesOut, "botURL")
 			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
+			require.NotContains(t, propertiesOut, "shouldFlagBot")
 		})
 
-		t.Run("botIsInvalidBrowser, botName, botURL should not be set even if they are present if isBot is false", func(t *testing.T) {
+		t.Run("botIsInvalidBrowser, botName, botURL, shouldFlagBot should not be set even if they are present if isBot is false", func(t *testing.T) {
 			// botIsInvalidBrowser, botName, botURL should not be present if isBot is false, this case should not happen in production
 			msg, err := stream.FromMapProperties(map[string]string{
 				"receivedAt":          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
@@ -189,6 +244,7 @@ func TestMessage(t *testing.T) {
 				"botIsInvalidBrowser": "true",
 				"botName":             "TestBot",
 				"botURL":              "https://testbot.com",
+				"shouldFlagBot":       "true",
 			})
 			require.NoError(t, err)
 
@@ -203,6 +259,7 @@ func TestMessage(t *testing.T) {
 			require.NotContains(t, propertiesOut, "botName")
 			require.NotContains(t, propertiesOut, "botURL")
 			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
+			require.NotContains(t, propertiesOut, "shouldFlagBot")
 		})
 
 		t.Run("invalid isBot format", func(t *testing.T) {
@@ -223,6 +280,16 @@ func TestMessage(t *testing.T) {
 			})
 			require.Empty(t, msg)
 			require.EqualError(t, err, `parsing botIsInvalidBrowser: strconv.ParseBool: parsing "not-a-boolean": invalid syntax`)
+		})
+
+		t.Run("invalid shouldFlagBot format", func(t *testing.T) {
+			msg, err := stream.FromMapProperties(map[string]string{
+				"receivedAt":    time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC).Format(time.RFC3339Nano),
+				"isBot":         "true",
+				"shouldFlagBot": "not-a-boolean",
+			})
+			require.Empty(t, msg)
+			require.EqualError(t, err, `parsing shouldFlagBot: strconv.ParseBool: parsing "not-a-boolean": invalid syntax`)
 		})
 	})
 
@@ -400,6 +467,64 @@ func TestMessage(t *testing.T) {
 				BotName:             "TestBot",
 				BotURL:              "https://testbot.com",
 				BotIsInvalidBrowser: true,
+			},
+			Payload: json.RawMessage(`{
+				"key": "value"
+			}`),
+		}, msg)
+
+		output, err := json.Marshal(msg)
+		require.NoError(t, err)
+		require.JSONEq(t, input, string(output))
+	})
+
+	t.Run("message to/from: JSON with shouldFlagBot", func(t *testing.T) {
+		input := `
+		{
+			"properties": {
+				"requestType": "requestType",
+				"routingKey": "routingKey",
+				"workspaceID": "workspaceID",
+				"userID": "userID",
+				"sourceID": "sourceID",
+				"destinationID": "destinationID",
+				"receivedAt": "2024-08-01T02:30:50.0000002Z",
+				"requestIP": "10.29.13.20",
+				"sourceJobRunID": "sourceJobRunID",
+				"sourceTaskRunID": "sourceTaskRunID",
+				"traceID": "traceID",
+				"isBot": true,
+				"botName": "TestBot",
+				"botURL": "https://testbot.com",
+				"botIsInvalidBrowser": true,
+				"shouldFlagBot": true
+			},
+			"payload": {
+				"key": "value"
+			}
+		}`
+
+		msg := stream.Message{}
+		err := json.Unmarshal([]byte(input), &msg)
+		require.NoError(t, err)
+		require.Equal(t, stream.Message{
+			Properties: stream.MessageProperties{
+				RequestType:         "requestType",
+				RoutingKey:          "routingKey",
+				WorkspaceID:         "workspaceID",
+				UserID:              "userID",
+				SourceID:            "sourceID",
+				DestinationID:       "destinationID",
+				RequestIP:           "10.29.13.20",
+				ReceivedAt:          time.Date(2024, 8, 1, 0o2, 30, 50, 200, time.UTC),
+				SourceJobRunID:      "sourceJobRunID",
+				SourceTaskRunID:     "sourceTaskRunID",
+				TraceID:             "traceID",
+				IsBot:               true,
+				BotName:             "TestBot",
+				BotURL:              "https://testbot.com",
+				BotIsInvalidBrowser: true,
+				ShouldFlagBot:       true,
 			},
 			Payload: json.RawMessage(`{
 				"key": "value"
@@ -618,6 +743,7 @@ func TestMessage(t *testing.T) {
 			BotName:             "TestBot",
 			BotURL:              "https://testbot.com",
 			BotIsInvalidBrowser: true,
+			ShouldFlagBot:       true,
 		}
 
 		expectedFields := []logger.Field{
@@ -639,6 +765,7 @@ func TestMessage(t *testing.T) {
 			logger.NewStringField("botName", "TestBot"),
 			logger.NewStringField("botURL", "https://testbot.com"),
 			logger.NewBoolField("botIsInvalidBrowser", true),
+			logger.NewBoolField("shouldFlagBot", true),
 		}
 
 		require.ElementsMatch(t, expectedFields, properties.LoggerFields())
