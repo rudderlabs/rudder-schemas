@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.6.0...v0.7.0) (2025-06-09)
+
+
+### Features
+
+* add botAction field to message properties ([#74](https://github.com/rudderlabs/rudder-schemas/issues/74)) ([54a067d](https://github.com/rudderlabs/rudder-schemas/commit/54a067d1c5af9d5566b4b415635a9855257d7d93))
+
 ## [0.6.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.5.5...v0.6.0) (2025-05-09)
 
 
