@@ -131,6 +131,7 @@ func TestMessage(t *testing.T) {
 				"botName":             "TestBot",
 				"botURL":              "https://testbot.com",
 				"botIsInvalidBrowser": "true",
+				"botAction":           "flag",
 			}
 
 			msg, err := stream.FromMapProperties(input)
@@ -155,6 +156,7 @@ func TestMessage(t *testing.T) {
 				BotName:             "TestBot",
 				BotURL:              "https://testbot.com",
 				BotIsInvalidBrowser: true,
+				BotAction:           "flag",
 			}, msg)
 
 			propertiesOut := stream.ToMapProperties(msg)
@@ -172,6 +174,7 @@ func TestMessage(t *testing.T) {
 			require.Empty(t, msg.BotName)
 			require.Empty(t, msg.BotURL)
 			require.False(t, msg.BotIsInvalidBrowser)
+			require.Empty(t, msg.BotAction)
 
 			propertiesOut := stream.ToMapProperties(msg)
 
@@ -179,6 +182,7 @@ func TestMessage(t *testing.T) {
 			require.NotContains(t, propertiesOut, "botName")
 			require.NotContains(t, propertiesOut, "botURL")
 			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
+			require.NotContains(t, propertiesOut, "botAction")
 		})
 
 		t.Run("botIsInvalidBrowser, botName, botURL should not be set even if they are present if isBot is false", func(t *testing.T) {
@@ -189,6 +193,7 @@ func TestMessage(t *testing.T) {
 				"botIsInvalidBrowser": "true",
 				"botName":             "TestBot",
 				"botURL":              "https://testbot.com",
+				"botAction":           "flag",
 			})
 			require.NoError(t, err)
 
@@ -196,6 +201,7 @@ func TestMessage(t *testing.T) {
 			require.Empty(t, msg.BotName)
 			require.Empty(t, msg.BotURL)
 			require.False(t, msg.BotIsInvalidBrowser)
+			require.Empty(t, msg.BotAction)
 
 			propertiesOut := stream.ToMapProperties(msg)
 
@@ -203,6 +209,7 @@ func TestMessage(t *testing.T) {
 			require.NotContains(t, propertiesOut, "botName")
 			require.NotContains(t, propertiesOut, "botURL")
 			require.NotContains(t, propertiesOut, "botIsInvalidBrowser")
+			require.NotContains(t, propertiesOut, "botAction")
 		})
 
 		t.Run("invalid isBot format", func(t *testing.T) {
@@ -373,7 +380,8 @@ func TestMessage(t *testing.T) {
 				"isBot": true,
 				"botName": "TestBot",
 				"botURL": "https://testbot.com",
-				"botIsInvalidBrowser": true
+				"botIsInvalidBrowser": true,
+				"botAction": "flag"
 			},
 			"payload": {
 				"key": "value"
@@ -400,6 +408,7 @@ func TestMessage(t *testing.T) {
 				BotName:             "TestBot",
 				BotURL:              "https://testbot.com",
 				BotIsInvalidBrowser: true,
+				BotAction:           "flag",
 			},
 			Payload: json.RawMessage(`{
 				"key": "value"
@@ -618,6 +627,7 @@ func TestMessage(t *testing.T) {
 			BotName:             "TestBot",
 			BotURL:              "https://testbot.com",
 			BotIsInvalidBrowser: true,
+			BotAction:           "flag",
 		}
 
 		expectedFields := []logger.Field{
@@ -639,6 +649,7 @@ func TestMessage(t *testing.T) {
 			logger.NewStringField("botName", "TestBot"),
 			logger.NewStringField("botURL", "https://testbot.com"),
 			logger.NewBoolField("botIsInvalidBrowser", true),
+			logger.NewStringField("botAction", "flag"),
 		}
 
 		require.ElementsMatch(t, expectedFields, properties.LoggerFields())

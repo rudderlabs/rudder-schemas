@@ -35,6 +35,7 @@ const (
 	mapKeyBotName              = "botName"
 	mapKeyBotURL               = "botURL"
 	mapKeyBotIsInvalidBrowser  = "botIsInvalidBrowser"
+	mapKeyBotAction            = "botAction"
 )
 
 var (
@@ -73,6 +74,8 @@ type MessageProperties struct {
 	BotURL string `json:"botURL,omitempty"` // optional
 	// BotIsInvalidBrowser is true if event is a bot and the browser is invalid
 	BotIsInvalidBrowser bool `json:"botIsInvalidBrowser,omitempty"` // optional
+	// BotAction defines the action for bot events: "flag" enriches with bot details, "disable" only reports metrics.
+	BotAction string `json:"botAction,omitempty"` // optional
 }
 
 func (m MessageProperties) LoggerFields() []logger.Field {
@@ -106,6 +109,7 @@ func (m MessageProperties) LoggerFields() []logger.Field {
 		fields = append(fields, logger.NewStringField(mapKeyBotName, m.BotName))
 		fields = append(fields, logger.NewStringField(mapKeyBotURL, m.BotURL))
 		fields = append(fields, logger.NewBoolField(mapKeyBotIsInvalidBrowser, m.BotIsInvalidBrowser))
+		fields = append(fields, logger.NewStringField(mapKeyBotAction, m.BotAction))
 	}
 	return fields
 }
@@ -118,7 +122,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 	}
 
 	var isBot, botIsInvalidBrowser bool
-	var botName, botURL string
+	var botName, botURL, botAction string
 
 	if properties[mapKeyIsBot] != "" {
 		isBot, err = strconv.ParseBool(properties[mapKeyIsBot])
@@ -130,6 +134,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 	if isBot {
 		botName = properties[mapKeyBotName]
 		botURL = properties[mapKeyBotURL]
+		botAction = properties[mapKeyBotAction]
 
 		if properties[mapKeyBotIsInvalidBrowser] != "" {
 			botIsInvalidBrowser, err = strconv.ParseBool(properties[mapKeyBotIsInvalidBrowser])
@@ -161,6 +166,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		BotName:              botName,
 		BotURL:               botURL,
 		BotIsInvalidBrowser:  botIsInvalidBrowser,
+		BotAction:            botAction,
 	}, nil
 }
 
@@ -192,6 +198,7 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		m[mapKeyBotName] = properties.BotName
 		m[mapKeyBotURL] = properties.BotURL
 		m[mapKeyBotIsInvalidBrowser] = strconv.FormatBool(properties.BotIsInvalidBrowser)
+		m[mapKeyBotAction] = properties.BotAction
 	}
 	return m
 }
