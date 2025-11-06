@@ -5,6 +5,9 @@ on:
       - main
       - "release/*"
   pull_request:
+permissions:
+  contents: read
+
 jobs:
   unit:
     name: Unit
