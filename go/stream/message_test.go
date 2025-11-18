@@ -28,6 +28,7 @@ func TestMessage(t *testing.T) {
 			"compression":     "some-serialized-compression-settings",
 			"encryption":      "some-serialized-encryption-settings",
 			"encryptionKeyID": "encryptionKeyID",
+			"partitionID":     "",
 		}
 
 		msg, err := stream.FromMapProperties(input)
@@ -48,6 +49,7 @@ func TestMessage(t *testing.T) {
 			Compression:     "some-serialized-compression-settings",
 			Encryption:      "some-serialized-encryption-settings",
 			EncryptionKeyID: "encryptionKeyID",
+			PartitionID:     "",
 		}, msg)
 
 		propertiesOut := stream.ToMapProperties(msg)
@@ -81,6 +83,7 @@ func TestMessage(t *testing.T) {
 			"compression":          "some-serialized-compression-settings",
 			"encryption":           "some-serialized-encryption-settings",
 			"encryptionKeyID":      "encryptionKeyID",
+			"partitionID":          "workspaceID-0",
 		}
 
 		msg, err := stream.FromMapProperties(input)
@@ -104,6 +107,7 @@ func TestMessage(t *testing.T) {
 			Compression:          "some-serialized-compression-settings",
 			Encryption:           "some-serialized-encryption-settings",
 			EncryptionKeyID:      "encryptionKeyID",
+			PartitionID:          "workspaceID-0",
 		}, msg)
 
 		propertiesOut := stream.ToMapProperties(msg)
@@ -132,6 +136,7 @@ func TestMessage(t *testing.T) {
 				"botURL":              "https://testbot.com",
 				"botIsInvalidBrowser": "true",
 				"botAction":           "flag",
+				"partitionID":         "",
 			}
 
 			msg, err := stream.FromMapProperties(input)
@@ -561,6 +566,7 @@ func TestMessage(t *testing.T) {
 			logger.NewStringField("encryption", "some-serialized-encryption-settings"),
 			logger.NewStringField("encryptionKeyID", "encryptionKeyID"),
 			logger.NewBoolField("isBot", false),
+			logger.NewStringField("partitionID", ""),
 		}
 
 		require.ElementsMatch(t, expectedFields, properties.LoggerFields())
@@ -583,6 +589,7 @@ func TestMessage(t *testing.T) {
 			Compression:     "some-serialized-compression-settings",
 			Encryption:      "some-serialized-encryption-settings",
 			EncryptionKeyID: "encryptionKeyID",
+			PartitionID:     "workspaceID-0",
 		}
 
 		expectedFields := []logger.Field{
@@ -601,6 +608,7 @@ func TestMessage(t *testing.T) {
 			logger.NewStringField("encryption", "some-serialized-encryption-settings"),
 			logger.NewStringField("encryptionKeyID", "encryptionKeyID"),
 			logger.NewBoolField("isBot", false),
+			logger.NewStringField("partitionID", "workspaceID-0"),
 		}
 
 		require.ElementsMatch(t, expectedFields, properties.LoggerFields())
@@ -650,6 +658,7 @@ func TestMessage(t *testing.T) {
 			logger.NewStringField("botURL", "https://testbot.com"),
 			logger.NewBoolField("botIsInvalidBrowser", true),
 			logger.NewStringField("botAction", "flag"),
+			logger.NewStringField("partitionID", ""),
 		}
 
 		require.ElementsMatch(t, expectedFields, properties.LoggerFields())

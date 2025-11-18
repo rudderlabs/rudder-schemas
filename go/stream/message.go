@@ -36,6 +36,7 @@ const (
 	mapKeyBotURL               = "botURL"
 	mapKeyBotIsInvalidBrowser  = "botIsInvalidBrowser"
 	mapKeyBotAction            = "botAction"
+	mapKeyPartitionID          = "partitionID"
 )
 
 var (
@@ -75,7 +76,8 @@ type MessageProperties struct {
 	// BotIsInvalidBrowser is true if event is a bot and the browser is invalid
 	BotIsInvalidBrowser bool `json:"botIsInvalidBrowser,omitempty"` // optional
 	// BotAction defines the action for bot events: "flag" enriches with bot details, "disable" only reports metrics.
-	BotAction string `json:"botAction,omitempty"` // optional
+	BotAction   string `json:"botAction,omitempty"`   // optional
+	PartitionID string `json:"partitionID,omitempty"` // optional
 }
 
 func (m MessageProperties) LoggerFields() []logger.Field {
@@ -111,6 +113,7 @@ func (m MessageProperties) LoggerFields() []logger.Field {
 		fields = append(fields, logger.NewBoolField(mapKeyBotIsInvalidBrowser, m.BotIsInvalidBrowser))
 		fields = append(fields, logger.NewStringField(mapKeyBotAction, m.BotAction))
 	}
+	fields = append(fields, logger.NewStringField(mapKeyPartitionID, m.PartitionID))
 	return fields
 }
 
@@ -167,6 +170,7 @@ func FromMapProperties(properties map[string]string) (MessageProperties, error) 
 		BotURL:               botURL,
 		BotIsInvalidBrowser:  botIsInvalidBrowser,
 		BotAction:            botAction,
+		PartitionID:          properties[mapKeyPartitionID],
 	}, nil
 }
 
@@ -187,6 +191,7 @@ func ToMapProperties(properties MessageProperties) map[string]string {
 		mapKeyCompression:     properties.Compression,
 		mapKeyEncryption:      properties.Encryption,
 		mapKeyEncryptionKeyID: properties.EncryptionKeyID,
+		mapKeyPartitionID:     properties.PartitionID,
 	}
 	if properties.Stage == StageWebhook {
 		m[mapKeySourceType] = properties.SourceType
