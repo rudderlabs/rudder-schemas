@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.7.0...v0.8.0) (2025-11-19)
+
+
+### Features
+
+* add partitionID in message properties ([#114](https://github.com/rudderlabs/rudder-schemas/issues/114)) ([b4fcdcf](https://github.com/rudderlabs/rudder-schemas/commit/b4fcdcf0d1d8703af6626e41c0c537d143254998))
+
 ## [0.7.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.6.0...v0.7.0) (2025-06-09)
 
 
