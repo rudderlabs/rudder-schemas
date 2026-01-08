@@ -87,8 +87,8 @@ func TestMigrationTypes(t *testing.T) {
 		})
 	})
 
-	t.Run("ReloadRouterCommand", func(t *testing.T) {
-		cmd := &cluster.ReloadRouterCommand{
+	t.Run("ReloadSrcRouterCommand", func(t *testing.T) {
+		cmd := &cluster.ReloadSrcRouterCommand{
 			AckKey: "ack",
 		}
 
@@ -96,7 +96,7 @@ func TestMigrationTypes(t *testing.T) {
 			data, err := jsonrs.Marshal(cmd)
 			require.NoError(t, err)
 
-			var unmarshaled cluster.ReloadRouterCommand
+			var unmarshaled cluster.ReloadSrcRouterCommand
 			err = jsonrs.Unmarshal(data, &unmarshaled)
 			require.NoError(t, err)
 			require.Equal(t, cmd, &unmarshaled)
@@ -104,7 +104,7 @@ func TestMigrationTypes(t *testing.T) {
 
 		t.Run("Ack", func(t *testing.T) {
 			ack := cmd.Ack("node-0")
-			expectedAck := &cluster.ReloadRouterAck{
+			expectedAck := &cluster.ReloadSrcRouterAck{
 				NodeName: "node-0",
 			}
 			require.Equal(t, expectedAck, ack)

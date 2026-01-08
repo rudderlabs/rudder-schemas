@@ -5,11 +5,11 @@ import "github.com/samber/lo"
 type PartitionMigrationStatus string
 
 const (
-	PartitionMigrationStatusNew             PartitionMigrationStatus = "new"              // initial state
-	PartitionMigrationStatusReloadingGW     PartitionMigrationStatus = "reloading-gw"     // reloading gateway nodes
-	PartitionMigrationStatusReloadingRouter PartitionMigrationStatus = "reloading-router" // reloading source routers
-	PartitionMigrationStatusMigrating       PartitionMigrationStatus = "migrating"        // migrating partitions
-	PartitionMigrationStatusCompleted       PartitionMigrationStatus = "completed"        // migration completed
+	PartitionMigrationStatusNew                PartitionMigrationStatus = "new"                 // initial state
+	PartitionMigrationStatusReloadingGW        PartitionMigrationStatus = "reloading-gw"        // reloading gateway nodes
+	PartitionMigrationStatusReloadingSrcRouter PartitionMigrationStatus = "reloading-srcrouter" // reloading source routers
+	PartitionMigrationStatusMigrating          PartitionMigrationStatus = "migrating"           // migrating partitions
+	PartitionMigrationStatusCompleted          PartitionMigrationStatus = "completed"           // migration completed
 )
 
 // PartitionMigration represents the overall migration process for a set of partitions.
@@ -29,7 +29,7 @@ type PartitionMigrationJobHeader struct {
 	Partitions []string `json:"partitions"` // List of partition IDs being migrated
 }
 
-// SourceNodes returns a list of unique source node IDs involved in the migration.
+// SourceNodes returns a list of unique source node indexes involved in the migration.
 func (pm *PartitionMigration) SourceNodes() []int {
 	return lo.Keys(lo.SliceToMap(pm.Jobs,
 		func(job *PartitionMigrationJobHeader) (int, struct{}) {
@@ -38,7 +38,7 @@ func (pm *PartitionMigration) SourceNodes() []int {
 	)
 }
 
-// TargetNodes returns a list of unique target node IDs involved in the migration.
+// TargetNodes returns a list of unique target node indexes involved in the migration.
 func (pm *PartitionMigration) TargetNodes() []int {
 	return lo.Keys(lo.SliceToMap(pm.Jobs,
 		func(job *PartitionMigrationJobHeader) (int, struct{}) {
@@ -81,19 +81,19 @@ type ReloadGatewayAck struct {
 	NodeName  string `json:"nodeName"`  // Name of the node acknowledging
 }
 
-// ReloadRouterCommand represents a command to reload the router after migration.
-type ReloadRouterCommand struct {
+// ReloadSrcRouterCommand represents a command to reload the source routers during migration.
+type ReloadSrcRouterCommand struct {
 	AckKey string `json:"ackKey"` // the key to use for acknowledging the reload
 }
 
-func (rr *ReloadRouterCommand) Ack(nodeName string) *ReloadRouterAck {
-	return &ReloadRouterAck{
+func (rr *ReloadSrcRouterCommand) Ack(nodeName string) *ReloadSrcRouterAck {
+	return &ReloadSrcRouterAck{
 		NodeName: nodeName,
 	}
 }
 
-// ReloadRouterAck represents an acknowledgment from the router after reloading.
-type ReloadRouterAck struct {
+// ReloadSrcRouterAck represents an acknowledgment from the srcrouter after reloading.
+type ReloadSrcRouterAck struct {
 	NodeName string `json:"nodeName"` // Name of the node acknowledging
 }
 
