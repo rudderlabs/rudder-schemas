@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.8.0...v0.9.0) (2026-01-09)
+
+
+### Features
+
+* introduce new common types for partition migration ([#135](https://github.com/rudderlabs/rudder-schemas/issues/135)) ([f4a66bf](https://github.com/rudderlabs/rudder-schemas/commit/f4a66bf406682359a2bb4bc5aa32869dbafdef5f))
+
 ## [0.8.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.7.0...v0.8.0) (2025-11-19)
 
 
