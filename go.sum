@@ -45,8 +45,8 @@ github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 h1:Jamvg5psRI
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/rogpeppe/go-internal v1.9.0 h1:73kH8U+JUqXU8lRuOHeVHaa/SZPifC7BkcraZVejAe8=
 github.com/rogpeppe/go-internal v1.9.0/go.mod h1:WtVeX8xhTBvf0smdhujwtBcq4Qrzq/fJaraNFVN+nFs=
-github.com/rudderlabs/rudder-go-kit v0.70.0 h1:Zk6DqIV/rtgpJU5hs5NH5z9D7Z9bEChz62UaNiL4JIM=
-github.com/rudderlabs/rudder-go-kit v0.70.0/go.mod h1:pQY4sbgt13Rc9kHqw9U2Ap/UIHvuzKXNkeJ+0l/RdKo=
+github.com/rudderlabs/rudder-go-kit v0.70.1 h1:WFEKNzUwmA97dgZWbVoN/XJO3jVeqTfIvptaAQdNkCk=
+github.com/rudderlabs/rudder-go-kit v0.70.1/go.mod h1:pQY4sbgt13Rc9kHqw9U2Ap/UIHvuzKXNkeJ+0l/RdKo=
 github.com/rudderlabs/sonnet v1.0.2 h1:nPfmDKD9gUwT571Dwtcsx0VIglSchvyNjuRLju4Xs3s=
 github.com/rudderlabs/sonnet v1.0.2/go.mod h1:tjQmKEGAo/xwmhw9AwLkazP5b5m8VpUvWNzPSx4ve0g=
 github.com/sagikazarmark/locafero v0.9.0 h1:GbgQGNtTrEmddYDSAH9QLRyfAHY12md+8YFTqyMTC9k=
