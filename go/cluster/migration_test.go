@@ -28,7 +28,7 @@ func TestMigrationTypes(t *testing.T) {
 					Partitions: []string{"ws1-2", "ws1-3"},
 				},
 			},
-			AckKey: "ack",
+			AckKeyPrefix: "ack",
 		}
 
 		t.Run("marshal unmarshal", func(t *testing.T) {
@@ -59,12 +59,17 @@ func TestMigrationTypes(t *testing.T) {
 			}
 			require.Equal(t, expectedAck, ack)
 		})
+
+		t.Run("AckKey", func(t *testing.T) {
+			ackKey := m.AckKey("node-0")
+			require.Equal(t, "ack/node-0", ackKey)
+		})
 	})
 
 	t.Run("ReloadGatewayCommand", func(t *testing.T) {
 		cmd := &cluster.ReloadGatewayCommand{
-			Nodes:  []int{0, 1, 2},
-			AckKey: "ack",
+			Nodes:        []int{0, 1, 2},
+			AckKeyPrefix: "ack",
 		}
 
 		t.Run("marshal unmarshal", func(t *testing.T) {
@@ -85,11 +90,16 @@ func TestMigrationTypes(t *testing.T) {
 			}
 			require.Equal(t, expectedAck, ack)
 		})
+
+		t.Run("AckKey", func(t *testing.T) {
+			ackKey := cmd.AckKey("node-0")
+			require.Equal(t, "ack/node-0", ackKey)
+		})
 	})
 
 	t.Run("ReloadSrcRouterCommand", func(t *testing.T) {
 		cmd := &cluster.ReloadSrcRouterCommand{
-			AckKey: "ack",
+			AckKeyPrefix: "ack",
 		}
 
 		t.Run("marshal unmarshal", func(t *testing.T) {
@@ -108,6 +118,11 @@ func TestMigrationTypes(t *testing.T) {
 				NodeName: "node-0",
 			}
 			require.Equal(t, expectedAck, ack)
+		})
+
+		t.Run("AckKey", func(t *testing.T) {
+			ackKey := cmd.AckKey("node-0")
+			require.Equal(t, "ack/node-0", ackKey)
 		})
 	})
 

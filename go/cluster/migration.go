@@ -1,6 +1,10 @@
 package cluster
 
-import "github.com/samber/lo"
+import (
+	"path"
+
+	"github.com/samber/lo"
+)
 
 type PartitionMigrationStatus string
 
@@ -18,7 +22,7 @@ type PartitionMigration struct {
 	Status PartitionMigrationStatus       `json:"status"` // current status of the migration
 	Jobs   []*PartitionMigrationJobHeader `json:"jobs"`   // list of migration jobs
 
-	AckKey string `json:"ackKey"` // the key to use for acknowledging the migration initialization
+	AckKeyPrefix string `json:"ackKeyPrefix"` // the key prefix to use for acknowledging the migration initialization
 }
 
 // PartitionMigrationJobHeader contains the basic information about a partition migration job.
@@ -55,6 +59,11 @@ func (pm *PartitionMigration) Ack(nodeIndex int, nodeName string) *PartitionMigr
 	}
 }
 
+// AckKey generates the acknowledgment key for a given node name.
+func (pm *PartitionMigration) AckKey(nodeName string) string {
+	return path.Join(pm.AckKeyPrefix, nodeName)
+}
+
 // PartitionMigrationAck represents an acknowledgment from a node regarding the migration.
 type PartitionMigrationAck struct {
 	NodeIndex int    `json:"nodeIndex"` // Index of the node acknowledging
@@ -65,14 +74,20 @@ type PartitionMigrationAck struct {
 type ReloadGatewayCommand struct {
 	Nodes []int `json:"nodes"` // list of gateway node indices to reload
 
-	AckKey string `json:"ackKey"` // the key to use for acknowledging the reload
+	AckKeyPrefix string `json:"ackKeyPrefix"` // the key prefix to use for acknowledging the reload
 }
 
+// Ack creates an acknowledgment for a gateway node after reloading.
 func (rg *ReloadGatewayCommand) Ack(nodeIndex int, nodeName string) *ReloadGatewayAck {
 	return &ReloadGatewayAck{
 		NodeIndex: nodeIndex,
 		NodeName:  nodeName,
 	}
+}
+
+// AckKey generates the acknowledgment key for a given node name.
+func (rg *ReloadGatewayCommand) AckKey(nodeName string) string {
+	return path.Join(rg.AckKeyPrefix, nodeName)
 }
 
 // ReloadGatewayAck represents an acknowledgment from a gateway node after reloading.
@@ -83,13 +98,19 @@ type ReloadGatewayAck struct {
 
 // ReloadSrcRouterCommand represents a command to reload the source routers during migration.
 type ReloadSrcRouterCommand struct {
-	AckKey string `json:"ackKey"` // the key to use for acknowledging the reload
+	AckKeyPrefix string `json:"ackKeyPrefix"` // the key prefix to use for acknowledging the reload
 }
 
+// Ack creates an acknowledgment for a source router node after reloading.
 func (rr *ReloadSrcRouterCommand) Ack(nodeName string) *ReloadSrcRouterAck {
 	return &ReloadSrcRouterAck{
 		NodeName: nodeName,
 	}
+}
+
+// AckKey generates the acknowledgment key for a given node name.
+func (rr *ReloadSrcRouterCommand) AckKey(nodeName string) string {
+	return path.Join(rr.AckKeyPrefix, nodeName)
 }
 
 // ReloadSrcRouterAck represents an acknowledgment from the srcrouter after reloading.
