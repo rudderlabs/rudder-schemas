@@ -5,7 +5,7 @@ go 1.25.5
 require (
 	github.com/go-playground/validator/v10 v10.30.1
 	github.com/rudderlabs/rudder-go-kit v0.70.1
-	github.com/samber/lo v1.51.0
+	github.com/samber/lo v1.52.0
 )
 
 require (
