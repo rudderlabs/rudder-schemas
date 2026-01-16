@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.1](https://github.com/rudderlabs/rudder-schemas/compare/v0.9.0...v0.9.1) (2026-01-16)
+
+
+### Miscellaneous
+
+* chores should trigger a patch release ([#140](https://github.com/rudderlabs/rudder-schemas/issues/140)) ([d44beb9](https://github.com/rudderlabs/rudder-schemas/commit/d44beb9d3a099cfda1f653e8d61a93f79223f885))
+* partition migration types ackKeyPrefix ([#139](https://github.com/rudderlabs/rudder-schemas/issues/139)) ([2a4e1ae](https://github.com/rudderlabs/rudder-schemas/commit/2a4e1aeb9a94b2211ed4dd7ac1fe5661da4397db))
+
 ## [0.9.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.8.0...v0.9.0) (2026-01-09)
 
 
