@@ -64,6 +64,51 @@ func TestMigrationTypes(t *testing.T) {
 			ackKey := m.AckKey("node-0")
 			require.Equal(t, "ack/node-0", ackKey)
 		})
+
+		t.Run("Clone", func(t *testing.T) {
+			original := &cluster.PartitionMigration{
+				ID:     "test-id",
+				Status: cluster.PartitionMigrationStatusMigrating,
+				Jobs: []*cluster.PartitionMigrationJobHeader{
+					{
+						JobID:      "job-1",
+						SourceNode: 0,
+						TargetNode: 1,
+						Partitions: []string{"partition-1", "partition-2"},
+					},
+					{
+						JobID:      "job-2",
+						SourceNode: 2,
+						TargetNode: 3,
+						Partitions: []string{"partition-3"},
+					},
+				},
+				AckKeyPrefix: "test-ack-prefix",
+			}
+
+			cloned := original.Clone()
+
+			// Verify that the clone is not the same object
+			require.NotSame(t, original, cloned)
+
+			// Verify that the top-level fields are equal
+			require.Equal(t, original, cloned)
+
+			// Verify that the jobs are deeply copied
+			for i := range original.Jobs {
+				require.NotSame(t, original.Jobs[i], cloned.Jobs[i])
+				require.Equal(t, original.Jobs[i], cloned.Jobs[i])
+			}
+
+			// Verify that modifying the clone doesn't affect the original
+			cloned.ID = "modified-id"
+			cloned.Jobs[0].JobID = "modified-job-id"
+			cloned.Jobs[0].Partitions[0] = "modified-partition"
+
+			require.Equal(t, "test-id", original.ID)
+			require.Equal(t, "job-1", original.Jobs[0].JobID)
+			require.Equal(t, "partition-1", original.Jobs[0].Partitions[0])
+		})
 	})
 
 	t.Run("ReloadGatewayCommand", func(t *testing.T) {
@@ -146,6 +191,32 @@ func TestMigrationTypes(t *testing.T) {
 			err = jsonrs.Unmarshal(data, &unmarshaled)
 			require.NoError(t, err)
 			require.Equal(t, job, &unmarshaled)
+		})
+	})
+
+	t.Run("PartitionMigrationJobHeader", func(t *testing.T) {
+		t.Run("Clone", func(t *testing.T) {
+			original := &cluster.PartitionMigrationJobHeader{
+				JobID:      "test-job-id",
+				SourceNode: 1,
+				TargetNode: 2,
+				Partitions: []string{"partition-a", "partition-b", "partition-c"},
+			}
+
+			cloned := original.Clone()
+
+			// Verify that the clone is not the same object
+			require.NotSame(t, original, cloned)
+
+			// Verify that all fields are equal
+			require.Equal(t, original, cloned)
+
+			// Verify that modifying the clone doesn't affect the original
+			cloned.JobID = "modified-job-id"
+			cloned.Partitions[0] = "modified-partition"
+
+			require.Equal(t, "test-job-id", original.JobID)
+			require.Equal(t, "partition-a", original.Partitions[0])
 		})
 	})
 }
