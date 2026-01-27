@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2](https://github.com/rudderlabs/rudder-schemas/compare/v0.9.1...v0.9.2) (2026-01-27)
+
+
+### Miscellaneous
+
+* implement Clone methods for PartitionMigration and PartitionMigrationJobHeader ([#144](https://github.com/rudderlabs/rudder-schemas/issues/144)) ([4517c5a](https://github.com/rudderlabs/rudder-schemas/commit/4517c5af490b111a310234b62f752a2a7cac4894))
+
 ## [0.9.1](https://github.com/rudderlabs/rudder-schemas/compare/v0.9.0...v0.9.1) (2026-01-16)
 
 
