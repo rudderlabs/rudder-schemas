@@ -2,6 +2,7 @@ package cluster
 
 import (
 	"path"
+	"slices"
 
 	"github.com/samber/lo"
 )
@@ -33,6 +34,16 @@ type PartitionMigrationJobHeader struct {
 	Partitions []string `json:"partitions"` // List of partition IDs being migrated
 }
 
+// Clone clones the PartitionMigrationJobHeader.
+func (pmj *PartitionMigrationJobHeader) Clone() *PartitionMigrationJobHeader {
+	return &PartitionMigrationJobHeader{
+		JobID:      pmj.JobID,
+		SourceNode: pmj.SourceNode,
+		TargetNode: pmj.TargetNode,
+		Partitions: slices.Clone(pmj.Partitions),
+	}
+}
+
 // SourceNodes returns a list of unique source node indexes involved in the migration.
 func (pm *PartitionMigration) SourceNodes() []int {
 	return lo.Keys(lo.SliceToMap(pm.Jobs,
@@ -62,6 +73,18 @@ func (pm *PartitionMigration) Ack(nodeIndex int, nodeName string) *PartitionMigr
 // AckKey generates the acknowledgment key for a given node name.
 func (pm *PartitionMigration) AckKey(nodeName string) string {
 	return path.Join(pm.AckKeyPrefix, nodeName)
+}
+
+// Clone creates a deep copy of the PartitionMigration.
+func (pm *PartitionMigration) Clone() *PartitionMigration {
+	return &PartitionMigration{
+		ID:     pm.ID,
+		Status: pm.Status,
+		Jobs: lo.Map(pm.Jobs, func(job *PartitionMigrationJobHeader, _ int) *PartitionMigrationJobHeader {
+			return job.Clone()
+		}),
+		AckKeyPrefix: pm.AckKeyPrefix,
+	}
 }
 
 // PartitionMigrationAck represents an acknowledgment from a node regarding the migration.
