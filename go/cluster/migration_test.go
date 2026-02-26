@@ -12,8 +12,9 @@ import (
 func TestMigrationTypes(t *testing.T) {
 	t.Run("PartitionMigration", func(t *testing.T) {
 		m := &cluster.PartitionMigration{
-			ID:     "id",
-			Status: cluster.PartitionMigrationStatusNew,
+			ID:             "id",
+			Status:         cluster.PartitionMigrationStatusNew,
+			PreviousStatus: "",
 			Jobs: []*cluster.PartitionMigrationJobHeader{
 				{
 					JobID:      "job-1",
@@ -67,8 +68,9 @@ func TestMigrationTypes(t *testing.T) {
 
 		t.Run("Clone", func(t *testing.T) {
 			original := &cluster.PartitionMigration{
-				ID:     "test-id",
-				Status: cluster.PartitionMigrationStatusMigrating,
+				ID:             "test-id",
+				Status:         cluster.PartitionMigrationStatusMigrating,
+				PreviousStatus: cluster.PartitionMigrationStatusReloadingSrcRouter,
 				Jobs: []*cluster.PartitionMigrationJobHeader{
 					{
 						JobID:      "job-1",
@@ -102,10 +104,12 @@ func TestMigrationTypes(t *testing.T) {
 
 			// Verify that modifying the clone doesn't affect the original
 			cloned.ID = "modified-id"
+			cloned.PreviousStatus = cluster.PartitionMigrationStatusReloadingGW
 			cloned.Jobs[0].JobID = "modified-job-id"
 			cloned.Jobs[0].Partitions[0] = "modified-partition"
 
 			require.Equal(t, "test-id", original.ID)
+			require.Equal(t, cluster.PartitionMigrationStatusReloadingSrcRouter, original.PreviousStatus)
 			require.Equal(t, "job-1", original.Jobs[0].JobID)
 			require.Equal(t, "partition-1", original.Jobs[0].Partitions[0])
 		})
