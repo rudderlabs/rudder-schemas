@@ -19,9 +19,10 @@ const (
 
 // PartitionMigration represents the overall migration process for a set of partitions.
 type PartitionMigration struct {
-	ID     string                         `json:"id"`     // unique identifier for the migration
-	Status PartitionMigrationStatus       `json:"status"` // current status of the migration
-	Jobs   []*PartitionMigrationJobHeader `json:"jobs"`   // list of migration jobs
+	ID             string                         `json:"id"`             // unique identifier for the migration
+	Status         PartitionMigrationStatus       `json:"status"`         // current status of the migration
+	PreviousStatus PartitionMigrationStatus       `json:"previousStatus"` // previous status of the migration
+	Jobs           []*PartitionMigrationJobHeader `json:"jobs"`           // list of migration jobs
 
 	AckKeyPrefix string `json:"ackKeyPrefix"` // the key prefix to use for acknowledging the migration initialization
 }
@@ -78,8 +79,9 @@ func (pm *PartitionMigration) AckKey(nodeName string) string {
 // Clone creates a deep copy of the PartitionMigration.
 func (pm *PartitionMigration) Clone() *PartitionMigration {
 	return &PartitionMigration{
-		ID:     pm.ID,
-		Status: pm.Status,
+		ID:             pm.ID,
+		Status:         pm.Status,
+		PreviousStatus: pm.PreviousStatus,
 		Jobs: lo.Map(pm.Jobs, func(job *PartitionMigrationJobHeader, _ int) *PartitionMigrationJobHeader {
 			return job.Clone()
 		}),
