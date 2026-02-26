@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.9.3](https://github.com/rudderlabs/rudder-schemas/compare/v0.9.2...v0.9.3) (2026-02-26)
+
+
+### Miscellaneous
+
+* add PreviousStatus field to PartitionMigration ([#159](https://github.com/rudderlabs/rudder-schemas/issues/159)) ([14c20a6](https://github.com/rudderlabs/rudder-schemas/commit/14c20a661c8f6e6ddb789cb4e9c3b6eb6dd20213))
+* **ci:** migrate from PAT to GitHub App token [SEC-58] ([#147](https://github.com/rudderlabs/rudder-schemas/issues/147)) ([918c002](https://github.com/rudderlabs/rudder-schemas/commit/918c0023d9786bd6f0a271ed5dd9bf8d912bebf6))
+* enable gosec security linter ([#155](https://github.com/rudderlabs/rudder-schemas/issues/155)) ([ab2b0d8](https://github.com/rudderlabs/rudder-schemas/commit/ab2b0d8e93bc71e793ef26ca6bcdc63236207ea8))
+
 ## [0.9.2](https://github.com/rudderlabs/rudder-schemas/compare/v0.9.1...v0.9.2) (2026-01-27)
 
 
