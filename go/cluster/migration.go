@@ -157,3 +157,30 @@ type PartitionMigrationJob struct {
 	MigrationID string                      `json:"migrationId"`
 	Status      PartitionMigrationJobStatus `json:"status"`
 }
+
+// PartitionMigrationInfo represents the information about an ongoing partition migration, including job details.
+type PartitionMigrationInfo struct {
+	ID             string                   `json:"id"`             // unique identifier for the migration
+	Status         PartitionMigrationStatus `json:"status"`         // current status of the migration
+	PreviousStatus PartitionMigrationStatus `json:"previousStatus"` // previous status of the migration
+	Jobs           []*PartitionMigrationJob `json:"jobs"`           // list of migration jobs
+
+	AckKeyPrefix string `json:"ackKeyPrefix"` // the key prefix to use for acknowledging the migration initialization
+}
+
+func (pmi *PartitionMigrationInfo) FromPartitionMigration(pm PartitionMigration, jobStatusMap map[string]PartitionMigrationJobStatus) {
+	if pmi == nil {
+		return
+	}
+	pmi.ID = pm.ID
+	pmi.Status = pm.Status
+	pmi.PreviousStatus = pm.PreviousStatus
+	pmi.Jobs = lo.Map(pm.Jobs, func(job *PartitionMigrationJobHeader, _ int) *PartitionMigrationJob {
+		return &PartitionMigrationJob{
+			PartitionMigrationJobHeader: *job.Clone(),
+			MigrationID:                 pm.ID,
+			Status:                      jobStatusMap[job.JobID],
+		}
+	})
+	pmi.AckKeyPrefix = pm.AckKeyPrefix
+}

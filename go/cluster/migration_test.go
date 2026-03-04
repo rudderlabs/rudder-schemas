@@ -198,6 +198,104 @@ func TestMigrationTypes(t *testing.T) {
 		})
 	})
 
+	t.Run("PartitionMigrationInfo", func(t *testing.T) {
+		info := &cluster.PartitionMigrationInfo{
+			ID:             "migration-1",
+			Status:         cluster.PartitionMigrationStatusMigrating,
+			PreviousStatus: cluster.PartitionMigrationStatusReloadingSrcRouter,
+			Jobs: []*cluster.PartitionMigrationJob{
+				{
+					PartitionMigrationJobHeader: cluster.PartitionMigrationJobHeader{
+						JobID:      "job-1",
+						SourceNode: 0,
+						TargetNode: 1,
+						Partitions: []string{"ws1-0"},
+					},
+					MigrationID: "migration-1",
+					Status:      cluster.PartitionMigrationJobStatusMoved,
+				},
+			},
+			AckKeyPrefix: "ack",
+		}
+
+		t.Run("marshal unmarshal", func(t *testing.T) {
+			data, err := jsonrs.Marshal(info)
+			require.NoError(t, err)
+
+			var unmarshaled cluster.PartitionMigrationInfo
+			err = jsonrs.Unmarshal(data, &unmarshaled)
+			require.NoError(t, err)
+			require.Equal(t, info, &unmarshaled)
+		})
+
+		t.Run("FromPartitionMigration", func(t *testing.T) {
+			pm := &cluster.PartitionMigration{
+				ID:             "migration-2",
+				Status:         cluster.PartitionMigrationStatusMigrating,
+				PreviousStatus: cluster.PartitionMigrationStatusReloadingSrcRouter,
+				Jobs: []*cluster.PartitionMigrationJobHeader{
+					{
+						JobID:      "job-1",
+						SourceNode: 0,
+						TargetNode: 1,
+						Partitions: []string{"ws1-0", "ws1-1"},
+					},
+					{
+						JobID:      "job-2",
+						SourceNode: 1,
+						TargetNode: 2,
+						Partitions: []string{"ws1-2"},
+					},
+				},
+				AckKeyPrefix: "ack-prefix",
+			}
+			jobStatusMap := map[string]cluster.PartitionMigrationJobStatus{
+				"job-1": cluster.PartitionMigrationJobStatusCompleted,
+			}
+
+			var pmi *cluster.PartitionMigrationInfo
+			pmi.FromPartitionMigration(*pm, jobStatusMap)
+			require.Nil(t, pmi)
+
+			pmi = &cluster.PartitionMigrationInfo{}
+			pmi.FromPartitionMigration(*pm, jobStatusMap)
+
+			expected := &cluster.PartitionMigrationInfo{
+				ID:             pm.ID,
+				Status:         pm.Status,
+				PreviousStatus: pm.PreviousStatus,
+				Jobs: []*cluster.PartitionMigrationJob{
+					{
+						PartitionMigrationJobHeader: cluster.PartitionMigrationJobHeader{
+							JobID:      "job-1",
+							SourceNode: 0,
+							TargetNode: 1,
+							Partitions: []string{"ws1-0", "ws1-1"},
+						},
+						MigrationID: "migration-2",
+						Status:      cluster.PartitionMigrationJobStatusCompleted,
+					},
+					{
+						PartitionMigrationJobHeader: cluster.PartitionMigrationJobHeader{
+							JobID:      "job-2",
+							SourceNode: 1,
+							TargetNode: 2,
+							Partitions: []string{"ws1-2"},
+						},
+						MigrationID: "migration-2",
+						Status:      "",
+					},
+				},
+				AckKeyPrefix: "ack-prefix",
+			}
+			require.Equal(t, expected, pmi)
+
+			// Verify that result jobs are deep copied from migration headers.
+			pmi.Jobs[0].Partitions[0] = "modified-partition"
+			require.Equal(t, "ws1-0", pm.Jobs[0].Partitions[0])
+		})
+	})
+
 	t.Run("PartitionMigrationJobHeader", func(t *testing.T) {
 		t.Run("Clone", func(t *testing.T) {
 			original := &cluster.PartitionMigrationJobHeader{
