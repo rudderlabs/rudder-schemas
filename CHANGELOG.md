@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.9.3...v0.10.0) (2026-03-06)
+
+
+### Features
+
+* introduce PartitionMigrationInfo ([#162](https://github.com/rudderlabs/rudder-schemas/issues/162)) ([cf292f4](https://github.com/rudderlabs/rudder-schemas/commit/cf292f4e7ff92fd62fe26491aec02b1d78441792))
+
 ## [0.9.3](https://github.com/rudderlabs/rudder-schemas/compare/v0.9.2...v0.9.3) (2026-02-26)
 
 
