@@ -2,6 +2,7 @@ package cluster_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -29,6 +30,7 @@ func TestMigrationTypes(t *testing.T) {
 					Partitions: []string{"ws1-2", "ws1-3"},
 				},
 			},
+			StartTime:    time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
 			AckKeyPrefix: "ack",
 		}
 
@@ -85,6 +87,7 @@ func TestMigrationTypes(t *testing.T) {
 						Partitions: []string{"partition-3"},
 					},
 				},
+				StartTime:    time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
 				AckKeyPrefix: "test-ack-prefix",
 			}
 
@@ -185,6 +188,7 @@ func TestMigrationTypes(t *testing.T) {
 			},
 			MigrationID: "migration-1",
 			Status:      cluster.PartitionMigrationJobStatusNew,
+			StartTime:   time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
 		}
 
 		t.Run("marshal unmarshal", func(t *testing.T) {
@@ -215,6 +219,7 @@ func TestMigrationTypes(t *testing.T) {
 					Status:      cluster.PartitionMigrationJobStatusMoved,
 				},
 			},
+			StartTime:    time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
 			AckKeyPrefix: "ack",
 		}
 
@@ -247,6 +252,7 @@ func TestMigrationTypes(t *testing.T) {
 						Partitions: []string{"ws1-2"},
 					},
 				},
+				StartTime:    time.Date(2025, 6, 15, 12, 0, 0, 0, time.UTC),
 				AckKeyPrefix: "ack-prefix",
 			}
 			jobStatusMap := map[string]cluster.PartitionMigrationJobStatus{
@@ -286,6 +292,7 @@ func TestMigrationTypes(t *testing.T) {
 						Status:      "",
 					},
 				},
+				StartTime:    time.Date(2025, 6, 15, 12, 0, 0, 0, time.UTC),
 				AckKeyPrefix: "ack-prefix",
 			}
 			require.Equal(t, expected, pmi)
