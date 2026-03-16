@@ -173,6 +173,30 @@ type PartitionMigrationInfo struct {
 	AckKeyPrefix string `json:"ackKeyPrefix"` // the key prefix to use for acknowledging the migration initialization
 }
 
+// Clone creates a deep copy of the PartitionMigrationInfo.
+func (pmi *PartitionMigrationInfo) Clone() *PartitionMigrationInfo {
+	return &PartitionMigrationInfo{
+		ID:             pmi.ID,
+		Status:         pmi.Status,
+		PreviousStatus: pmi.PreviousStatus,
+		Jobs: lo.Map(pmi.Jobs, func(job *PartitionMigrationJob, _ int) *PartitionMigrationJob {
+			return job.Clone()
+		}),
+		StartTime:    pmi.StartTime,
+		AckKeyPrefix: pmi.AckKeyPrefix,
+	}
+}
+
+// Clone creates a deep copy of the PartitionMigrationJob.
+func (pmj *PartitionMigrationJob) Clone() *PartitionMigrationJob {
+	return &PartitionMigrationJob{
+		PartitionMigrationJobHeader: *pmj.PartitionMigrationJobHeader.Clone(),
+		MigrationID:                 pmj.MigrationID,
+		Status:                      pmj.Status,
+		StartTime:                   pmj.StartTime,
+	}
+}
+
 func (pmi *PartitionMigrationInfo) FromPartitionMigration(pm PartitionMigration, jobStatusMap map[string]PartitionMigrationJobStatus) {
 	if pmi == nil {
 		return

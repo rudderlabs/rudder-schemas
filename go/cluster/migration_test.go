@@ -200,6 +200,36 @@ func TestMigrationTypes(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, job, &unmarshaled)
 		})
+
+		t.Run("Clone", func(t *testing.T) {
+			original := &cluster.PartitionMigrationJob{
+				PartitionMigrationJobHeader: cluster.PartitionMigrationJobHeader{
+					JobID:      "job-1",
+					SourceNode: 0,
+					TargetNode: 1,
+					Partitions: []string{"partition-1", "partition-2"},
+				},
+				MigrationID: "migration-1",
+				Status:      cluster.PartitionMigrationJobStatusMoved,
+				StartTime:   time.Date(2025, 3, 10, 8, 0, 0, 0, time.UTC),
+			}
+
+			cloned := original.Clone()
+
+			require.NotSame(t, original, cloned)
+			require.Equal(t, original, cloned)
+
+			// Verify that modifying the clone doesn't affect the original
+			cloned.MigrationID = "modified-migration"
+			cloned.Status = cluster.PartitionMigrationJobStatusCompleted
+			cloned.JobID = "modified-job-id"
+			cloned.Partitions[0] = "modified-partition"
+
+			require.Equal(t, "migration-1", original.MigrationID)
+			require.Equal(t, cluster.PartitionMigrationJobStatusMoved, original.Status)
+			require.Equal(t, "job-1", original.JobID)
+			require.Equal(t, "partition-1", original.Partitions[0])
+		})
 	})
 
 	t.Run("PartitionMigrationInfo", func(t *testing.T) {
@@ -231,6 +261,64 @@ func TestMigrationTypes(t *testing.T) {
 			err = jsonrs.Unmarshal(data, &unmarshaled)
 			require.NoError(t, err)
 			require.Equal(t, info, &unmarshaled)
+		})
+
+		t.Run("Clone", func(t *testing.T) {
+			original := &cluster.PartitionMigrationInfo{
+				ID:             "migration-1",
+				Status:         cluster.PartitionMigrationStatusMigrating,
+				PreviousStatus: cluster.PartitionMigrationStatusReloadingSrcRouter,
+				Jobs: []*cluster.PartitionMigrationJob{
+					{
+						PartitionMigrationJobHeader: cluster.PartitionMigrationJobHeader{
+							JobID:      "job-1",
+							SourceNode: 0,
+							TargetNode: 1,
+							Partitions: []string{"ws1-0", "ws1-1"},
+						},
+						MigrationID: "migration-1",
+						Status:      cluster.PartitionMigrationJobStatusMoved,
+						StartTime:   time.Date(2025, 3, 10, 8, 0, 0, 0, time.UTC),
+					},
+					{
+						PartitionMigrationJobHeader: cluster.PartitionMigrationJobHeader{
+							JobID:      "job-2",
+							SourceNode: 2,
+							TargetNode: 3,
+							Partitions: []string{"ws1-2"},
+						},
+						MigrationID: "migration-1",
+						Status:      cluster.PartitionMigrationJobStatusNew,
+						StartTime:   time.Date(2025, 3, 10, 9, 0, 0, 0, time.UTC),
+					},
+				},
+				StartTime:    time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
+				AckKeyPrefix: "ack",
+			}
+
+			cloned := original.Clone()
+
+			require.NotSame(t, original, cloned)
+			require.Equal(t, original, cloned)
+
+			// Verify that jobs are deeply copied
+			for i := range original.Jobs {
+				require.NotSame(t, original.Jobs[i], cloned.Jobs[i])
+				require.Equal(t, original.Jobs[i], cloned.Jobs[i])
+			}
+
+			// Verify that modifying the clone doesn't affect the original
+			cloned.ID = "modified-id"
+			cloned.Status = cluster.PartitionMigrationStatusCompleted
+			cloned.Jobs[0].JobID = "modified-job-id"
+			cloned.Jobs[0].Partitions[0] = "modified-partition"
+			cloned.Jobs[0].MigrationID = "modified-migration"
+
+			require.Equal(t, "migration-1", original.ID)
+			require.Equal(t, cluster.PartitionMigrationStatusMigrating, original.Status)
+			require.Equal(t, "job-1", original.Jobs[0].JobID)
+			require.Equal(t, "ws1-0", original.Jobs[0].Partitions[0])
+			require.Equal(t, "migration-1", original.Jobs[0].MigrationID)
 		})
 
 		t.Run("FromPartitionMigration", func(t *testing.T) {
