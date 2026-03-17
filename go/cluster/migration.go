@@ -3,6 +3,7 @@ package cluster
 import (
 	"path"
 	"slices"
+	"time"
 
 	"github.com/samber/lo"
 )
@@ -23,6 +24,7 @@ type PartitionMigration struct {
 	Status         PartitionMigrationStatus       `json:"status"`         // current status of the migration
 	PreviousStatus PartitionMigrationStatus       `json:"previousStatus"` // previous status of the migration
 	Jobs           []*PartitionMigrationJobHeader `json:"jobs"`           // list of migration jobs
+	StartTime      time.Time                      `json:"startTime"`      // time when the migration was started
 
 	AckKeyPrefix string `json:"ackKeyPrefix"` // the key prefix to use for acknowledging the migration initialization
 }
@@ -85,6 +87,7 @@ func (pm *PartitionMigration) Clone() *PartitionMigration {
 		Jobs: lo.Map(pm.Jobs, func(job *PartitionMigrationJobHeader, _ int) *PartitionMigrationJobHeader {
 			return job.Clone()
 		}),
+		StartTime:    pm.StartTime,
 		AckKeyPrefix: pm.AckKeyPrefix,
 	}
 }
@@ -156,6 +159,7 @@ type PartitionMigrationJob struct {
 	PartitionMigrationJobHeader
 	MigrationID string                      `json:"migrationId"`
 	Status      PartitionMigrationJobStatus `json:"status"`
+	StartTime   time.Time                   `json:"startTime"` // time when the migration job was started
 }
 
 // PartitionMigrationInfo represents the information about an ongoing partition migration, including job details.
@@ -164,8 +168,33 @@ type PartitionMigrationInfo struct {
 	Status         PartitionMigrationStatus `json:"status"`         // current status of the migration
 	PreviousStatus PartitionMigrationStatus `json:"previousStatus"` // previous status of the migration
 	Jobs           []*PartitionMigrationJob `json:"jobs"`           // list of migration jobs
+	StartTime      time.Time                `json:"startTime"`      // time when the migration was started
 
 	AckKeyPrefix string `json:"ackKeyPrefix"` // the key prefix to use for acknowledging the migration initialization
+}
+
+// Clone creates a deep copy of the PartitionMigrationInfo.
+func (pmi *PartitionMigrationInfo) Clone() *PartitionMigrationInfo {
+	return &PartitionMigrationInfo{
+		ID:             pmi.ID,
+		Status:         pmi.Status,
+		PreviousStatus: pmi.PreviousStatus,
+		Jobs: lo.Map(pmi.Jobs, func(job *PartitionMigrationJob, _ int) *PartitionMigrationJob {
+			return job.Clone()
+		}),
+		StartTime:    pmi.StartTime,
+		AckKeyPrefix: pmi.AckKeyPrefix,
+	}
+}
+
+// Clone creates a deep copy of the PartitionMigrationJob.
+func (pmj *PartitionMigrationJob) Clone() *PartitionMigrationJob {
+	return &PartitionMigrationJob{
+		PartitionMigrationJobHeader: *pmj.PartitionMigrationJobHeader.Clone(),
+		MigrationID:                 pmj.MigrationID,
+		Status:                      pmj.Status,
+		StartTime:                   pmj.StartTime,
+	}
 }
 
 func (pmi *PartitionMigrationInfo) FromPartitionMigration(pm PartitionMigration, jobStatusMap map[string]PartitionMigrationJobStatus) {
@@ -183,4 +212,5 @@ func (pmi *PartitionMigrationInfo) FromPartitionMigration(pm PartitionMigration,
 		}
 	})
 	pmi.AckKeyPrefix = pm.AckKeyPrefix
+	pmi.StartTime = pm.StartTime
 }
