@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.10.0...v0.11.0) (2026-03-17)
+
+
+### Features
+
+* add StartTime field to PartitionMigration and related structures ([#165](https://github.com/rudderlabs/rudder-schemas/issues/165)) ([ba93667](https://github.com/rudderlabs/rudder-schemas/commit/ba9366725db5ecfc6185915eae1a02def5779ee2))
+
 ## [0.10.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.9.3...v0.10.0) (2026-03-06)
 
 
