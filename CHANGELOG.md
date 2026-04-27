@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.11.1](https://github.com/rudderlabs/rudder-schemas/compare/v0.11.0...v0.11.1) (2026-04-27)
+
+
+### Miscellaneous
+
+* pin and bump action refs (SEC-171) ([#174](https://github.com/rudderlabs/rudder-schemas/issues/174)) ([c936ee7](https://github.com/rudderlabs/rudder-schemas/commit/c936ee72df979a6b8bebebdb9fcb43d39920aad5))
+* scope workflow permissions to least privilege (SEC-167) ([#184](https://github.com/rudderlabs/rudder-schemas/issues/184)) ([b3fb4bd](https://github.com/rudderlabs/rudder-schemas/commit/b3fb4bd675ce4813a1e8e6cd4939ec0c4622571d))
+* **vuln:** zizmor --fix=all findings (SEC-199) ([#183](https://github.com/rudderlabs/rudder-schemas/issues/183)) ([4183d14](https://github.com/rudderlabs/rudder-schemas/commit/4183d143aae5e238b2d63f7dc0e9241c2ffdb10c))
+
 ## [0.11.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.10.0...v0.11.0) (2026-03-17)
 
 
