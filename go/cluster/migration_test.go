@@ -32,6 +32,7 @@ func TestMigrationTypes(t *testing.T) {
 			},
 			StartTime:    time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
 			AckKeyPrefix: "ack",
+			Features:     cluster.PartitionMigrationFeatures{JobsDBFanout: true},
 		}
 
 		t.Run("marshal unmarshal", func(t *testing.T) {
@@ -63,6 +64,16 @@ func TestMigrationTypes(t *testing.T) {
 			require.Equal(t, expectedAck, ack)
 		})
 
+		t.Run("AckWithJobsDBs", func(t *testing.T) {
+			ack := m.AckWithJobsDBs(0, "node-0", []string{"gw", "rt", "batch_rt", "proc"})
+			expectedAck := &cluster.PartitionMigrationAck{
+				NodeIndex: 0,
+				NodeName:  "node-0",
+				JobsDBs:   []string{"gw", "rt", "batch_rt", "proc"},
+			}
+			require.Equal(t, expectedAck, ack)
+		})
+
 		t.Run("AckKey", func(t *testing.T) {
 			ackKey := m.AckKey("node-0")
 			require.Equal(t, "ack/node-0", ackKey)
@@ -89,6 +100,7 @@ func TestMigrationTypes(t *testing.T) {
 				},
 				StartTime:    time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
 				AckKeyPrefix: "test-ack-prefix",
+				Features:     cluster.PartitionMigrationFeatures{JobsDBFanout: true},
 			}
 
 			cloned := original.Clone()
@@ -110,11 +122,13 @@ func TestMigrationTypes(t *testing.T) {
 			cloned.PreviousStatus = cluster.PartitionMigrationStatusReloadingGW
 			cloned.Jobs[0].JobID = "modified-job-id"
 			cloned.Jobs[0].Partitions[0] = "modified-partition"
+			cloned.Features.JobsDBFanout = false
 
 			require.Equal(t, "test-id", original.ID)
 			require.Equal(t, cluster.PartitionMigrationStatusReloadingSrcRouter, original.PreviousStatus)
 			require.Equal(t, "job-1", original.Jobs[0].JobID)
 			require.Equal(t, "partition-1", original.Jobs[0].Partitions[0])
+			require.True(t, original.Features.JobsDBFanout)
 		})
 	})
 
@@ -185,6 +199,7 @@ func TestMigrationTypes(t *testing.T) {
 				SourceNode: 0,
 				TargetNode: 1,
 				Partitions: []string{"ws1-0", "ws1-1"},
+				JobsDB:     "rt",
 			},
 			MigrationID: "migration-1",
 			Status:      cluster.PartitionMigrationJobStatusNew,
@@ -208,6 +223,7 @@ func TestMigrationTypes(t *testing.T) {
 					SourceNode: 0,
 					TargetNode: 1,
 					Partitions: []string{"partition-1", "partition-2"},
+					JobsDB:     "batch_rt",
 				},
 				MigrationID: "migration-1",
 				Status:      cluster.PartitionMigrationJobStatusMoved,
@@ -224,11 +240,13 @@ func TestMigrationTypes(t *testing.T) {
 			cloned.Status = cluster.PartitionMigrationJobStatusCompleted
 			cloned.JobID = "modified-job-id"
 			cloned.Partitions[0] = "modified-partition"
+			cloned.JobsDB = "modified-jobsdb"
 
 			require.Equal(t, "migration-1", original.MigrationID)
 			require.Equal(t, cluster.PartitionMigrationJobStatusMoved, original.Status)
 			require.Equal(t, "job-1", original.JobID)
 			require.Equal(t, "partition-1", original.Partitions[0])
+			require.Equal(t, "batch_rt", original.JobsDB)
 		})
 	})
 
