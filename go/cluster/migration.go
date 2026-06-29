@@ -49,19 +49,21 @@ func (pmj *PartitionMigrationJobHeader) Clone() *PartitionMigrationJobHeader {
 
 // SourceNodes returns a list of unique source node indexes involved in the migration.
 func (pm *PartitionMigration) SourceNodes() []int {
-	return lo.Keys(lo.SliceToMap(pm.Jobs,
-		func(job *PartitionMigrationJobHeader) (int, struct{}) {
-			return job.SourceNode, struct{}{}
-		}),
+	return lo.Keys(
+		lo.SliceToMap(pm.Jobs,
+			func(job *PartitionMigrationJobHeader) (int, struct{}) {
+				return job.SourceNode, struct{}{}
+			}),
 	)
 }
 
 // TargetNodes returns a list of unique target node indexes involved in the migration.
 func (pm *PartitionMigration) TargetNodes() []int {
-	return lo.Keys(lo.SliceToMap(pm.Jobs,
-		func(job *PartitionMigrationJobHeader) (int, struct{}) {
-			return job.TargetNode, struct{}{}
-		}),
+	return lo.Keys(
+		lo.SliceToMap(pm.Jobs,
+			func(job *PartitionMigrationJobHeader) (int, struct{}) {
+				return job.TargetNode, struct{}{}
+			}),
 	)
 }
 
