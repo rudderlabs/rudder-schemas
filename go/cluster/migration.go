@@ -27,14 +27,22 @@ type PartitionMigration struct {
 	StartTime      time.Time                      `json:"startTime"`      // time when the migration was started
 
 	AckKeyPrefix string `json:"ackKeyPrefix"` // the key prefix to use for acknowledging the migration initialization
+
+	Features PartitionMigrationFeatures `json:"features"`
+}
+
+// PartitionMigrationFeatures holds optional capability flags advertised by the orchestrator.
+type PartitionMigrationFeatures struct {
+	JobsDBFanout bool `json:"jobsDBFanout"` // orchestrator supports per-JobsDB fan-out
 }
 
 // PartitionMigrationJobHeader contains the basic information about a partition migration job.
 type PartitionMigrationJobHeader struct {
-	JobID      string   `json:"jobId"`      // unique identifier for the migration job
-	SourceNode int      `json:"sourceNode"` // Index of the source node
-	TargetNode int      `json:"targetNode"` // Index of the target node
-	Partitions []string `json:"partitions"` // List of partition IDs being migrated
+	JobID      string   `json:"jobId"`            // unique identifier for the migration job
+	SourceNode int      `json:"sourceNode"`       // Index of the source node
+	TargetNode int      `json:"targetNode"`       // Index of the target node
+	Partitions []string `json:"partitions"`       // List of partition IDs being migrated
+	JobsDB     string   `json:"jobsDB,omitempty"` // the single JobsDB this job moves/flushes; empty => legacy all-jobsdbs mode
 }
 
 // Clone clones the PartitionMigrationJobHeader.
@@ -44,24 +52,27 @@ func (pmj *PartitionMigrationJobHeader) Clone() *PartitionMigrationJobHeader {
 		SourceNode: pmj.SourceNode,
 		TargetNode: pmj.TargetNode,
 		Partitions: slices.Clone(pmj.Partitions),
+		JobsDB:     pmj.JobsDB,
 	}
 }
 
 // SourceNodes returns a list of unique source node indexes involved in the migration.
 func (pm *PartitionMigration) SourceNodes() []int {
-	return lo.Keys(lo.SliceToMap(pm.Jobs,
-		func(job *PartitionMigrationJobHeader) (int, struct{}) {
-			return job.SourceNode, struct{}{}
-		}),
+	return lo.Keys(
+		lo.SliceToMap(pm.Jobs,
+			func(job *PartitionMigrationJobHeader) (int, struct{}) {
+				return job.SourceNode, struct{}{}
+			}),
 	)
 }
 
 // TargetNodes returns a list of unique target node indexes involved in the migration.
 func (pm *PartitionMigration) TargetNodes() []int {
-	return lo.Keys(lo.SliceToMap(pm.Jobs,
-		func(job *PartitionMigrationJobHeader) (int, struct{}) {
-			return job.TargetNode, struct{}{}
-		}),
+	return lo.Keys(
+		lo.SliceToMap(pm.Jobs,
+			func(job *PartitionMigrationJobHeader) (int, struct{}) {
+				return job.TargetNode, struct{}{}
+			}),
 	)
 }
 
@@ -70,6 +81,14 @@ func (pm *PartitionMigration) Ack(nodeIndex int, nodeName string) *PartitionMigr
 	return &PartitionMigrationAck{
 		NodeIndex: nodeIndex,
 		NodeName:  nodeName,
+	}
+}
+
+func (pm *PartitionMigration) AckWithJobsDBs(nodeIndex int, nodeName string, jobsdbs []string) *PartitionMigrationAck {
+	return &PartitionMigrationAck{
+		NodeIndex: nodeIndex,
+		NodeName:  nodeName,
+		JobsDBs:   jobsdbs,
 	}
 }
 
@@ -89,13 +108,15 @@ func (pm *PartitionMigration) Clone() *PartitionMigration {
 		}),
 		StartTime:    pm.StartTime,
 		AckKeyPrefix: pm.AckKeyPrefix,
+		Features:     pm.Features,
 	}
 }
 
 // PartitionMigrationAck represents an acknowledgment from a node regarding the migration.
 type PartitionMigrationAck struct {
-	NodeIndex int    `json:"nodeIndex"` // Index of the node acknowledging
-	NodeName  string `json:"nodeName"`  // Name of the node acknowledging
+	NodeIndex int      `json:"nodeIndex"`         // Index of the node acknowledging
+	NodeName  string   `json:"nodeName"`          // Name of the node acknowledging
+	JobsDBs   []string `json:"jobsDBs,omitempty"` // JobsDBs this source node will move, e.g. ["gw","rt","batch_rt","proc"]
 }
 
 // ReloadGatewayCommand represents a command to reload the gateway nodes during migration.
