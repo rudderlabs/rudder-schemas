@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.12.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.11.0...v0.12.0) (2026-07-02)
+
+
+### Features
+
+* add support in migration types for jobsdb fan-out ([#203](https://github.com/rudderlabs/rudder-schemas/issues/203)) ([5e83dd7](https://github.com/rudderlabs/rudder-schemas/commit/5e83dd7059bac61ed9f2d3e3d5e9ec685cc26b07))
+
+
+### Miscellaneous
+
+* pin and bump action refs (SEC-171) ([#174](https://github.com/rudderlabs/rudder-schemas/issues/174)) ([c936ee7](https://github.com/rudderlabs/rudder-schemas/commit/c936ee72df979a6b8bebebdb9fcb43d39920aad5))
+* scope workflow permissions to least privilege (SEC-167) ([#184](https://github.com/rudderlabs/rudder-schemas/issues/184)) ([b3fb4bd](https://github.com/rudderlabs/rudder-schemas/commit/b3fb4bd675ce4813a1e8e6cd4939ec0c4622571d))
+* **vuln:** zizmor --fix=all findings (SEC-199) ([#183](https://github.com/rudderlabs/rudder-schemas/issues/183)) ([4183d14](https://github.com/rudderlabs/rudder-schemas/commit/4183d143aae5e238b2d63f7dc0e9241c2ffdb10c))
+
 ## [0.11.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.10.0...v0.11.0) (2026-03-17)
 
 
