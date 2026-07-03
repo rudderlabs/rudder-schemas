@@ -4,7 +4,7 @@ go 1.26.4
 
 require (
 	github.com/go-playground/validator/v10 v10.30.3
-	github.com/rudderlabs/rudder-go-kit v0.77.1
+	github.com/rudderlabs/rudder-go-kit v0.78.0
 	github.com/samber/lo v1.53.0
 )
 
