@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.12.1](https://github.com/rudderlabs/rudder-schemas/compare/v0.12.0...v0.12.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* bump dependency versions ([#236](https://github.com/rudderlabs/rudder-schemas/issues/236)) ([22346b5](https://github.com/rudderlabs/rudder-schemas/commit/22346b5b4bba5a4b2d2fe1a8e8feac7d645d5bd2))
+
+
+### Miscellaneous
+
+* enforce errors.AsType and add AGENTS.md ([#235](https://github.com/rudderlabs/rudder-schemas/issues/235)) ([df4f7c9](https://github.com/rudderlabs/rudder-schemas/commit/df4f7c90d69496ae401131bc72465d124be5a369))
+
 ## [0.12.0](https://github.com/rudderlabs/rudder-schemas/compare/v0.11.0...v0.12.0) (2026-07-02)
 
 
