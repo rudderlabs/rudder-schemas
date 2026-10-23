@@ -1,4 +1,12 @@
 version: "2"
 linters:
   enable:
+    - forbidigo
     - gosec
+  settings:
+    forbidigo:
+      forbid:
+        - pattern: ^errors\.As$
+          pkg: ^errors$
+          msg: use errors.AsType[T](err) instead, it returns the typed value and an ok bool
+      analyze-types: true
