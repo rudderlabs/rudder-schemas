@@ -4,12 +4,13 @@ on:
       - "main"
 name: release-please
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    # release-please runs with the release App token; GITHUB_TOKEN needs no scope.
+    permissions: {}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
